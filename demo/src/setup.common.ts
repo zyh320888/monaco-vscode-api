@@ -1,3 +1,14 @@
+/**
+ * VSCode API 通用设置文件
+ *
+ * 此文件负责配置和初始化monaco-vscode-api的核心功能，包括：
+ * - 导入所有VSCode服务覆盖模块
+ * - 设置工作区文件系统
+ * - 配置Worker加载器
+ * - 定义工作台构造选项
+ * - 组合所有服务覆盖
+ */
+// 导入配置服务覆盖模块
 import getConfigurationServiceOverride, {
   IStoredWorkspace,
   initUserConfiguration
@@ -14,12 +25,14 @@ import {
   registerFileSystemOverlay,
   initFile
 } from '@codingame/monaco-vscode-files-service-override'
+// 导入monaco编辑器核心模块
 import * as monaco from 'monaco-editor'
 import {
   IWorkbenchConstructionOptions,
   LogLevel,
   IEditorOverrideServices
 } from '@codingame/monaco-vscode-api'
+// 导入VSCode API模块
 import * as vscode from 'vscode'
 import getModelServiceOverride from '@codingame/monaco-vscode-model-service-override'
 import getNotificationServiceOverride from '@codingame/monaco-vscode-notifications-service-override'
@@ -87,8 +100,10 @@ import { TerminalBackend } from './features/terminal'
 import { workerConfig } from './tools/extHostWorker'
 import 'vscode/localExtensionHost'
 
-console.log(vscode.version); // 输出客户端版本信息
+// 输出当前VSCode API客户端版本信息
+console.log(vscode.version);
 
+// 解析当前页面URL参数
 const url = new URL(document.location.href)
 const params = url.searchParams
 export const remoteAuthority = params.get('remoteAuthority') ?? undefined
@@ -101,8 +116,10 @@ params.delete('resetLayout')
 
 window.history.replaceState({}, document.title, url.href)
 
+// 默认工作区文件路径
 export let workspaceFile = monaco.Uri.file('/workspace.code-workspace')
 
+// 创建IndexedDB存储提供者
 export const userDataProvider = await createIndexedDBProviders()
 
 if (useHtmlFileSystemProvider) {
@@ -120,6 +137,7 @@ if (useHtmlFileSystemProvider) {
 
   registerHTMLFileSystemProvider()
 } else {
+  // 创建注册文件系统提供者(非只读模式)
   const fileSystemProvider = new RegisteredFileSystemProvider(false)
 
   fileSystemProvider.registerFile(
@@ -266,7 +284,10 @@ h1 {
   registerFileSystemOverlay(1, fileSystemProvider)
 }
 
-// Workers
+/**
+ * Worker加载器配置
+ * 定义不同类型Worker的加载方式
+ */
 export type WorkerLoader = () => Worker
 const workerLoaders: Partial<Record<string, WorkerLoader>> = {
   TextEditorWorker: () =>
@@ -312,12 +333,17 @@ window.MonacoEnvironment = {
   }
 }
 
-// Set configuration before initializing service so it's directly available (especially for the theme, to prevent a flicker)
+// 在初始化服务前设置配置，确保直接可用(特别是主题设置，防止闪烁)
 await Promise.all([
   initUserConfiguration(defaultConfiguration),
   initUserKeybindings(defaultKeybindings)
 ])
 
+/**
+ * 工作台构造选项
+ * 配置VSCode工作台的核心参数
+ */
+// 工作台构造选项配置
 export const constructOptions: IWorkbenchConstructionOptions = {
   remoteAuthority,
   enableWorkspaceTrust: true,
@@ -398,74 +424,83 @@ export const constructOptions: IWorkbenchConstructionOptions = {
   }
 }
 
+/**
+ * 环境覆盖选项
+ * 用于自定义VSCode环境设置
+ */
 export const envOptions: EnvironmentOverride = {
   // Otherwise, VSCode detect it as the first open workspace folder
   // which make the search result extension fail as it's not able to know what was detected by VSCode
   // userHome: vscode.Uri.file('/')
 }
 
+/**
+ * 通用服务覆盖
+ * 组合所有VSCode服务的覆盖实现
+ */
 export const commonServices: IEditorOverrideServices = {
-  ...getAuthenticationServiceOverride(),
-  ...getLogServiceOverride(),
-  ...getExtensionServiceOverride(workerConfig),
-  ...getExtensionGalleryServiceOverride({ webOnly: false }),
-  ...getModelServiceOverride(),
-  ...getNotificationServiceOverride(),
-  ...getDialogsServiceOverride(),
-  ...getConfigurationServiceOverride(),
-  ...getKeybindingsServiceOverride(),
-  ...getTextmateServiceOverride(),
-  ...getTreeSitterServiceOverride(),
-  ...getThemeServiceOverride(),
-  ...getLanguagesServiceOverride(),
-  ...getDebugServiceOverride(),
-  ...getPreferencesServiceOverride(),
-  ...getOutlineServiceOverride(),
-  ...getTimelineServiceOverride(),
-  ...getBannerServiceOverride(),
-  ...getStatusBarServiceOverride(),
-  ...getTitleBarServiceOverride(),
-  ...getSnippetServiceOverride(),
-  ...getOutputServiceOverride(),
-  ...getTerminalServiceOverride(new TerminalBackend()),
-  ...getSearchServiceOverride(),
-  ...getMarkersServiceOverride(),
-  ...getAccessibilityServiceOverride(),
-  ...getLanguageDetectionWorkerServiceOverride(),
-  ...getStorageServiceOverride({
+  // 认证服务覆盖 - 处理用户认证相关功能
+  ...getAuthenticationServiceOverride(), // 认证服务覆盖 - 处理用户认证相关功能
+  ...getLogServiceOverride(), // 日志服务覆盖 - 提供日志记录功能
+  ...getExtensionServiceOverride(workerConfig), // 扩展服务覆盖 - 管理VSCode扩展
+  ...getExtensionGalleryServiceOverride({ webOnly: false }), // 扩展市场服务覆盖 - 处理扩展市场相关功能
+  ...getModelServiceOverride(), // 模型服务覆盖 - 管理编辑器文本模型
+  ...getNotificationServiceOverride(), // 通知服务覆盖 - 处理系统通知
+  ...getDialogsServiceOverride(), // 对话框服务覆盖 - 管理系统对话框
+  ...getConfigurationServiceOverride(), // 配置服务覆盖 - 管理系统配置
+  ...getKeybindingsServiceOverride(), // 快捷键服务覆盖 - 管理键盘快捷键
+  ...getTextmateServiceOverride(), // Textmate语法服务覆盖 - 提供语法高亮
+  ...getTreeSitterServiceOverride(), // Tree-sitter语法分析服务覆盖
+  ...getThemeServiceOverride(), // 主题服务覆盖 - 管理编辑器主题
+  ...getLanguagesServiceOverride(), // 语言服务覆盖 - 提供语言支持
+  ...getDebugServiceOverride(), // 调试服务覆盖 - 提供调试功能
+  ...getPreferencesServiceOverride(), // 首选项服务覆盖 - 管理用户首选项
+  ...getOutlineServiceOverride(), // 大纲视图服务覆盖 - 提供代码大纲功能
+  ...getTimelineServiceOverride(), // 时间线服务覆盖 - 提供文件历史时间线
+  ...getBannerServiceOverride(), // 横幅服务覆盖 - 管理顶部横幅
+  ...getStatusBarServiceOverride(), // 状态栏服务覆盖 - 管理底部状态栏
+  ...getTitleBarServiceOverride(), // 标题栏服务覆盖 - 管理窗口标题栏
+  ...getSnippetServiceOverride(), // 代码片段服务覆盖 - 管理代码片段
+  ...getOutputServiceOverride(), // 输出面板服务覆盖 - 管理输出面板
+  ...getTerminalServiceOverride(new TerminalBackend()), // 终端服务覆盖 - 管理集成终端
+  ...getSearchServiceOverride(), // 搜索服务覆盖 - 提供全局搜索功能
+  ...getMarkersServiceOverride(), // 标记服务覆盖 - 管理问题和警告标记
+  ...getAccessibilityServiceOverride(), // 无障碍服务覆盖 - 提供无障碍支持
+  ...getLanguageDetectionWorkerServiceOverride(), // 语言检测服务覆盖 - 自动检测文件语言
+  ...getStorageServiceOverride({ // 存储服务覆盖 - 管理本地存储
     fallbackOverride: {
       'workbench.activity.showAccounts': false
     }
   }),
-  ...getRemoteAgentServiceOverride({ scanRemoteExtensions: true }),
-  ...getLifecycleServiceOverride(),
-  ...getEnvironmentServiceOverride(),
-  ...getWorkspaceTrustOverride(),
-  ...getWorkingCopyServiceOverride(),
-  ...getScmServiceOverride(),
-  ...getTestingServiceOverride(),
-  ...getChatServiceOverride(),
-  ...getNotebookServiceOverride(),
-  ...getWelcomeServiceOverride(),
-  ...getWalkThroughServiceOverride(),
-  ...getUserDataProfileServiceOverride(),
-  ...getUserDataSyncServiceOverride(),
-  ...getAiServiceOverride(),
-  ...getTaskServiceOverride(),
-  ...getCommentsServiceOverride(),
-  ...getEditSessionsServiceOverride(),
-  ...getEmmetServiceOverride(),
-  ...getInteractiveServiceOverride(),
-  ...getIssueServiceOverride(),
-  ...getMultiDiffEditorServiceOverride(),
-  ...getPerformanceServiceOverride(),
-  ...getRelauncherServiceOverride(),
-  ...getShareServiceOverride(),
-  ...getSpeechServiceOverride(),
-  ...getSurveyServiceOverride(),
-  ...getUpdateServiceOverride(),
-  ...getExplorerServiceOverride(),
-  ...getLocalizationServiceOverride({
+  ...getRemoteAgentServiceOverride({ scanRemoteExtensions: true }), // 远程代理服务覆盖 - 处理远程连接
+  ...getLifecycleServiceOverride(), // 生命周期服务覆盖 - 管理应用生命周期
+  ...getEnvironmentServiceOverride(), // 环境服务覆盖 - 提供环境信息
+  ...getWorkspaceTrustOverride(), // 工作区信任服务覆盖 - 管理工作区信任状态
+  ...getWorkingCopyServiceOverride(), // 工作副本服务覆盖 - 管理未保存的更改
+  ...getScmServiceOverride(), // 源代码管理服务覆盖 - 提供版本控制功能
+  ...getTestingServiceOverride(), // 测试服务覆盖 - 提供测试功能
+  ...getChatServiceOverride(), // 聊天服务覆盖 - 提供聊天功能
+  ...getNotebookServiceOverride(), // 笔记本服务覆盖 - 管理笔记本文档
+  ...getWelcomeServiceOverride(), // 欢迎页面服务覆盖 - 管理欢迎页面
+  ...getWalkThroughServiceOverride(), // 引导服务覆盖 - 提供产品引导
+  ...getUserDataProfileServiceOverride(), // 用户数据配置服务覆盖 - 管理用户配置
+  ...getUserDataSyncServiceOverride(), // 用户数据同步服务覆盖 - 同步用户设置
+  ...getAiServiceOverride(), // AI服务覆盖 - 提供AI辅助功能
+  ...getTaskServiceOverride(), // 任务服务覆盖 - 管理任务运行
+  ...getCommentsServiceOverride(), // 评论服务覆盖 - 管理代码评论
+  ...getEditSessionsServiceOverride(), // 编辑会话服务覆盖 - 管理编辑会话
+  ...getEmmetServiceOverride(), // Emmet服务覆盖 - 提供Emmet缩写扩展
+  ...getInteractiveServiceOverride(), // 交互式服务覆盖 - 管理交互式会话
+  ...getIssueServiceOverride(), // 问题报告服务覆盖 - 管理问题报告
+  ...getMultiDiffEditorServiceOverride(), // 多差异编辑器服务覆盖 - 管理差异比较
+  ...getPerformanceServiceOverride(), // 性能服务覆盖 - 监控性能指标
+  ...getRelauncherServiceOverride(), // 重启服务覆盖 - 处理应用重启
+  ...getShareServiceOverride(), // 分享服务覆盖 - 管理内容分享
+  ...getSpeechServiceOverride(), // 语音服务覆盖 - 提供语音功能
+  ...getSurveyServiceOverride(), // 调查服务覆盖 - 管理用户调查
+  ...getUpdateServiceOverride(), // 更新服务覆盖 - 处理应用更新
+  ...getExplorerServiceOverride(), // 资源管理器服务覆盖 - 管理文件资源
+  ...getLocalizationServiceOverride({ // 本地化服务覆盖 - 提供多语言支持
     async clearLocale() {
       const url = new URL(window.location.href)
       url.searchParams.delete('locale')
@@ -543,7 +578,7 @@ export const commonServices: IEditorOverrideServices = {
       }
     ]
   }),
-  ...getSecretStorageServiceOverride(),
-  ...getTelemetryServiceOverride(),
-  ...getMcpServiceOverride()
+  ...getSecretStorageServiceOverride(), // 密钥存储服务覆盖 - 安全存储敏感信息
+  ...getTelemetryServiceOverride(), // 遥测服务覆盖 - 收集使用数据
+  ...getMcpServiceOverride() // MCP服务覆盖 - 管理模型控制协议
 }

@@ -6,9 +6,9 @@
  * - 提供UI交互功能
  */
 import './style.css'
-import * as monaco from 'monaco-editor'
-import { ExtensionHostKind, registerExtension } from '@codingame/monaco-vscode-api/extensions'
-import { useHtmlFileSystemProvider } from './setup.common'
+// import * as monaco from 'monaco-editor'
+// import { ExtensionHostKind, registerExtension } from '@codingame/monaco-vscode-api/extensions'
+// import { useHtmlFileSystemProvider } from './setup.common'
 import './features/output'
 import './features/debugger'
 import './features/search'
@@ -60,67 +60,67 @@ import '@codingame/monaco-vscode-npm-default-extension'
 import '@codingame/monaco-vscode-media-preview-default-extension'
 import '@codingame/monaco-vscode-ipynb-default-extension'
 
-// 注册演示扩展，使用本地进程作为扩展宿主
-const { getApi } = registerExtension(
-  {
-    name: 'demo-main',
-    publisher: 'codingame',
-    version: '1.0.0',
-    engines: {
-      vscode: '*'
-    }
-  },
-  ExtensionHostKind.LocalProcess
-)
+// // 注册演示扩展，使用本地进程作为扩展宿主
+// const { getApi } = registerExtension(
+//   {
+//     name: 'demo-main',
+//     publisher: 'codingame',
+//     version: '1.0.0',
+//     engines: {
+//       vscode: '*'
+//     }
+//   },
+//   ExtensionHostKind.LocalProcess
+// )
 
-// 获取VSCode API并初始化演示功能
-void getApi().then(async (vscode) => {
-  if (!useHtmlFileSystemProvider) {
-    const mainModelUri = vscode.Uri.file('/workspace/test.js')
-    await Promise.all([
-      vscode.workspace.openTextDocument(mainModelUri),
-      vscode.workspace.openTextDocument(monaco.Uri.file('/workspace/test_readonly.js')) // open the file so vscode sees it's locked
-    ])
+// // 获取VSCode API并初始化演示功能
+// void getApi().then(async (vscode) => {
+//   if (!useHtmlFileSystemProvider) {
+//     const mainModelUri = vscode.Uri.file('/workspace/test.js')
+//     await Promise.all([
+//       vscode.workspace.openTextDocument(mainModelUri),
+//       vscode.workspace.openTextDocument(monaco.Uri.file('/workspace/test_readonly.js')) // open the file so vscode sees it's locked
+//     ])
 
-    // 创建演示用的诊断信息集合
-    const diagnostics = vscode.languages.createDiagnosticCollection('demo')
-    diagnostics.set(mainModelUri, [
-      {
-        range: new vscode.Range(2, 9, 2, 12),
-        severity: vscode.DiagnosticSeverity.Error,
-        message: "This is not a real error, just a demo, don't worry",
-        source: 'Demo',
-        code: 42
-      }
-    ])
-  }
+//     // 创建演示用的诊断信息集合
+//     const diagnostics = vscode.languages.createDiagnosticCollection('demo')
+//     diagnostics.set(mainModelUri, [
+//       {
+//         range: new vscode.Range(2, 9, 2, 12),
+//         severity: vscode.DiagnosticSeverity.Error,
+//         message: "This is not a real error, just a demo, don't worry",
+//         source: 'Demo',
+//         code: 42
+//       }
+//     ])
+//   }
 
-  // 切换完整工作台模式的按钮事件处理
-  document.querySelector('#toggleFullWorkbench')!.addEventListener('click', async () => {
-    const url = new URL(window.location.href)
-    if (url.searchParams.get('mode') === 'full-workbench') {
-      url.searchParams.delete('mode')
-    } else {
-      url.searchParams.set('mode', 'full-workbench')
-    }
-    window.location.href = url.toString()
-  })
+//   // 切换完整工作台模式的按钮事件处理
+//   document.querySelector('#toggleFullWorkbench')!.addEventListener('click', async () => {
+//     const url = new URL(window.location.href)
+//     if (url.searchParams.get('mode') === 'full-workbench') {
+//       url.searchParams.delete('mode')
+//     } else {
+//       url.searchParams.set('mode', 'full-workbench')
+//     }
+//     window.location.href = url.toString()
+//   })
 
-  // 重置布局的按钮事件处理
-  document.querySelector('#resetLayout')!.addEventListener('click', async () => {
-    const url = new URL(window.location.href)
-    url.searchParams.set('resetLayout', 'true')
-    window.location.href = url.toString()
-  })
+//   // 重置布局的按钮事件处理
+//   document.querySelector('#resetLayout')!.addEventListener('click', async () => {
+//     const url = new URL(window.location.href)
+//     url.searchParams.set('resetLayout', 'true')
+//     window.location.href = url.toString()
+//   })
 
-  // 切换HTML文件系统提供者的按钮事件处理
-  document.querySelector('#toggleHTMLFileSystemProvider')!.addEventListener('click', async () => {
-    const url = new URL(window.location.href)
-    if (url.searchParams.has('htmlFileSystemProvider')) {
-      url.searchParams.delete('htmlFileSystemProvider')
-    } else {
-      url.searchParams.set('htmlFileSystemProvider', 'true')
-    }
-    window.location.href = url.toString()
-  })
-})
+//   // 切换HTML文件系统提供者的按钮事件处理
+//   document.querySelector('#toggleHTMLFileSystemProvider')!.addEventListener('click', async () => {
+//     const url = new URL(window.location.href)
+//     if (url.searchParams.has('htmlFileSystemProvider')) {
+//       url.searchParams.delete('htmlFileSystemProvider')
+//     } else {
+//       url.searchParams.set('htmlFileSystemProvider', 'true')
+//     }
+//     window.location.href = url.toString()
+//   })
+// })
