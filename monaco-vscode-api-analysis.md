@@ -192,3 +192,58 @@ const { getApi } = registerExtension(
 - 可扩展的架构设计
 - 丰富的功能模块
 - 灵活的配置系统
+
+## 6. 高级功能实现
+
+### 6.1 远程扩展支持
+- 通过 remoteExtension.ts 实现
+- 支持 WebSocket 通信协议
+- 提供扩展宿主环境隔离
+
+关键实现：
+```typescript
+const extensionHost = new ExtensionHost(
+  extensionHostWorkerUrl,
+  extensionHostConfig
+)
+```
+
+### 6.2 自定义视图
+- 通过 customView.views.ts 实现
+- 支持动态注册视图容器
+- 提供视图数据绑定机制
+
+关键实现：
+```typescript
+vscode.window.registerWebviewViewProvider(
+  'customView',
+  new CustomViewProvider(context)
+)
+```
+
+### 6.3 工作线程通信
+- 通过 extHostWorker.ts 实现
+- 使用结构化克隆算法传输数据
+- 支持同步和异步调用
+
+关键实现：
+```typescript
+const proxy = new Proxy(target, {
+  get(target, prop) {
+    return (...args) => postMessage({ type: 'call', prop, args })
+  }
+})
+```
+
+### 6.4 跨域处理方案
+- 通过 crossOriginWorker.ts 实现
+- 使用 postMessage 进行安全通信
+- 支持 CORS 和 CSP 限制环境
+
+关键实现：
+```typescript
+const worker = new Worker(
+  URL.createObjectURL(
+    new Blob([crossOriginWorkerScript], { type: 'application/javascript' })
+)
+```
