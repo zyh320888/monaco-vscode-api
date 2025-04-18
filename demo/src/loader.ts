@@ -59,8 +59,10 @@ const mode = searchParams.get('mode')
 
 if (mode === 'full-workbench') {
   void import('./main.workbench')
-} else {
+} else if (mode === 'views') {
   void import('./main.views')
+} else {
+  void import('./main.minimal')
 }
 
 export {}
