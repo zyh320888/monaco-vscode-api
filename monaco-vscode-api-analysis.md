@@ -2,13 +2,56 @@
 
 ## 1. 整体架构概述
 
-该编辑器基于 Monaco Editor 和 VSCode API 构建，主要特点：
+该编辑器基于 Monaco Editor 和 VSCode API 构建，采用分层架构设计：
+
+1. **配置层**(setup.common.ts):
+   - 初始化VSCode服务覆盖
+   - 设置文件系统和工作线程环境
+   - 定义工作台构造选项
+
+2. **核心层**(main.common.ts):
+   - 注册VSCode扩展
+   - 加载语言支持
+   - 初始化基础功能模块
+
+3. **视图层**(main.views.ts):
+   - 实现UI交互
+   - 管理编辑器面板
+   - 处理设置和快捷键
+
+4. **功能模块**(features目录):
+   - 提供各种编辑器功能
+   - 支持远程扩展
+
+5. **工具层**(tools目录):
+   - 工作线程相关工具
+   - 跨域通信支持
+
+主要特点：
 - 模块化设计，各功能独立实现
 - 支持 VSCode 扩展机制
 - 提供完整的编辑器工作台功能
 - 可配置的用户界面
 
 ## 2. 核心功能模块
+
+### 2.0 核心配置层 (setup.common.ts)
+- 初始化各种VSCode服务覆盖(1-82行)
+- 处理远程连接参数(92-102行)
+- 初始化文件系统提供者(108-267行)
+- 配置工作线程(270-313行)
+- 设置工作台构造选项(321-399行)
+- 组合所有公共服务(407-500行)
+
+关键实现：
+```typescript
+// 初始化文件系统提供者
+const fileSystemProvider = new FileSystemProvider()
+vscode.workspace.registerFileSystemProvider('file', fileSystemProvider)
+
+// 配置工作线程
+const worker = new Worker(new URL('./tools/extHostWorker.ts', import.meta.url))
+```
 
 ### 2.1 主视图入口 (main.views.ts)
 - 初始化编辑器服务和组件
@@ -95,8 +138,23 @@ await updateUserConfiguration(defaultConfiguration)
 // 更新快捷键
 await updateUserKeybindings(defaultKeybindings)
 ```
-
 ## 4. 扩展机制
+
+### 4.1 工具层实现 (tools目录)
+- **crossOriginWorker.ts**: 处理跨域工作线程通信
+- **extHostWorker.ts**: 扩展宿主工作线程实现
+- **fakeWorker.ts**: 模拟工作线程环境
+
+关键实现：
+```typescript
+// crossOriginWorker.ts 中的消息处理
+self.onmessage = (e) => {
+  if (e.data.type === 'request') {
+    // 处理跨域请求
+  }
+}
+```
+
 
 - 支持本地进程扩展
 - 提供扩展注册API
@@ -116,7 +174,20 @@ const { getApi } = registerExtension(
 
 ## 5. 总结
 
-该编辑器通过组合 Monaco Editor 和 VSCode API 实现了：
+该编辑器通过分层拼合配置实现：
+1. **初始化阶段**(setup.common.ts):
+   - 配置基础服务和环境
+   - 设置工作线程和文件系统
+
+2. **核心功能阶段**(main.common.ts):
+   - 注册扩展和语言支持
+   - 加载功能模块
+
+3. **视图集成阶段**(main.views.ts):
+   - 组合各功能模块
+   - 实现用户界面交互
+
+最终实现了：
 - 完整的代码编辑体验
 - 可扩展的架构设计
 - 丰富的功能模块
