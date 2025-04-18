@@ -20,12 +20,26 @@
    - 处理设置和快捷键
 
 4. **功能模块**(features目录):
-   - 提供各种编辑器功能
-   - 支持远程扩展
+   - 提供各种编辑器功能:
+     - AI辅助(ai.ts): 集成智能代码补全和重构建议
+     - 调试支持(debugger.ts): 断点管理和调试会话
+     - 智能感知(intellisense.ts): 代码补全和定义跳转
+     - 终端模拟(terminal.ts): 命令行交互环境
+     - 输出面板(output.ts): 多通道日志输出
+     - 远程扩展(remoteExtension.ts): 支持WebSocket扩展宿主
+     - 自定义视图(customView.*.ts): 可扩展UI组件
+   - 包含完整远程扩展示例(remoteExtensionExample/)
 
 5. **工具层**(tools目录):
-   - 工作线程相关工具
-   - 跨域通信支持
+   - extHostWorker.ts: 扩展宿主工作线程实现
+     - 初始化扩展运行时环境
+     - 处理扩展API调用
+   - crossOriginWorker.ts: 跨域工作线程支持
+     - 安全的消息传递机制
+     - 处理CORS限制
+   - fakeWorker.ts: 模拟工作线程环境
+     - 用于测试和开发环境
+     - 提供相同API接口
 
 主要特点：
 - 模块化设计，各功能独立实现
@@ -139,11 +153,22 @@ await updateUserConfiguration(defaultConfiguration)
 await updateUserKeybindings(defaultKeybindings)
 ```
 ## 4. 扩展机制
-
 ### 4.1 工具层实现 (tools目录)
-- **crossOriginWorker.ts**: 处理跨域工作线程通信
-- **extHostWorker.ts**: 扩展宿主工作线程实现
-- **fakeWorker.ts**: 模拟工作线程环境
+- **crossOriginWorker.ts**:
+  - 使用Blob URL创建隔离环境
+  - 通过postMessage实现安全通信
+  - 支持跨域资源加载
+
+- **extHostWorker.ts**:
+  - 初始化扩展API环境
+  - 加载扩展入口文件
+  - 处理扩展生命周期事件
+
+- **fakeWorker.ts**:
+  - 模拟Worker接口
+  - 支持同步调试
+  - 用于单元测试场景
+
 
 关键实现：
 ```typescript
@@ -192,13 +217,19 @@ const { getApi } = registerExtension(
 - 可扩展的架构设计
 - 丰富的功能模块
 - 灵活的配置系统
-
 ## 6. 高级功能实现
 
 ### 6.1 远程扩展支持
-- 通过 remoteExtension.ts 实现
-- 支持 WebSocket 通信协议
-- 提供扩展宿主环境隔离
+- 通过 remoteExtension.ts 实现核心功能
+- 提供完整示例项目(remoteExtensionExample/):
+  - 包含扩展清单和本地化资源
+  - 实现基础WebSocket通信协议
+  - 演示扩展激活和API调用
+- 支持特性:
+  - 安全的扩展宿主隔离
+  - 双向通信通道
+  - 自动重连机制
+
 
 关键实现：
 ```typescript
@@ -207,11 +238,23 @@ const extensionHost = new ExtensionHost(
   extensionHostConfig
 )
 ```
+### 6.2 AI功能集成
+- 通过 ai.ts 实现智能辅助功能
+- 主要特性:
+  - 上下文感知的代码补全
+  - 基于LLM的代码重构建议
+  - 错误检测和自动修复
+  - 文档生成支持
+- 配置选项:
+  - 模型选择(本地/云端)
+  - 响应延迟控制
+  - 隐私保护设置
 
-### 6.2 自定义视图
+### 6.3 自定义视图
 - 通过 customView.views.ts 实现
 - 支持动态注册视图容器
 - 提供视图数据绑定机制
+
 
 关键实现：
 ```typescript
