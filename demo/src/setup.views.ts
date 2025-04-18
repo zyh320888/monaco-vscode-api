@@ -1,3 +1,11 @@
+/**
+ * VSCode视图模式设置文件
+ * 主要功能：
+ * - 初始化Monaco编辑器服务
+ * - 配置工作区布局和视图组件
+ * - 提供UI交互功能
+ * - 管理扩展注册和存储服务
+ */
 import {
   IStorageService,
   IWorkbenchLayoutService,
@@ -29,6 +37,7 @@ import {
   userDataProvider
 } from './setup.common'
 
+// 创建主容器元素并设置工作区HTML结构
 const container = document.createElement('div')
 container.id = 'app'
 container.innerHTML = `
@@ -77,7 +86,7 @@ container.innerHTML = `
 
 document.body.append(container)
 
-// Override services
+// 初始化Monaco服务并覆盖默认服务
 await initializeMonacoService(
   {
     ...commonServices,
@@ -93,10 +102,12 @@ await initializeMonacoService(
   envOptions
 )
 
+// 设置未捕获异常处理器
 setUnexpectedErrorHandler((e) => {
   console.info('Unexpected error', e)
 })
 
+// 配置工作区各部分的显示和布局
 for (const config of [
   { part: Parts.TITLEBAR_PART, element: '#titleBar' },
   { part: Parts.BANNER_PART, element: '#banner' },
@@ -142,6 +153,7 @@ for (const config of [
   })
 }
 
+// 获取布局服务并设置面板切换事件
 const layoutService = await getService(IWorkbenchLayoutService)
 document.querySelector('#togglePanel')!.addEventListener('click', async () => {
   layoutService.setPartHidden(layoutService.isVisible(Parts.PANEL_PART, window), Parts.PANEL_PART)
@@ -154,11 +166,16 @@ document.querySelector('#toggleAuxiliary')!.addEventListener('click', async () =
   )
 })
 
+/**
+ * 清除存储数据
+ * 重置用户数据和本地存储
+ */
 export async function clearStorage(): Promise<void> {
   await userDataProvider.reset()
   await ((await getService(IStorageService)) as BrowserStorageService).clear()
 }
 
+// 注册演示扩展并设置为默认API
 await registerExtension(
   {
     name: 'demo',

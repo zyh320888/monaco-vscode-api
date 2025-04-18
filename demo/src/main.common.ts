@@ -1,3 +1,10 @@
+/**
+ * VSCode扩展演示主入口文件
+ * 功能：
+ * - 注册VSCode扩展
+ * - 配置各种语言支持
+ * - 提供UI交互功能
+ */
 import './style.css'
 import * as monaco from 'monaco-editor'
 import { ExtensionHostKind, registerExtension } from '@codingame/monaco-vscode-api/extensions'
@@ -53,6 +60,7 @@ import '@codingame/monaco-vscode-npm-default-extension'
 import '@codingame/monaco-vscode-media-preview-default-extension'
 import '@codingame/monaco-vscode-ipynb-default-extension'
 
+// 注册演示扩展，使用本地进程作为扩展宿主
 const { getApi } = registerExtension(
   {
     name: 'demo-main',
@@ -65,6 +73,7 @@ const { getApi } = registerExtension(
   ExtensionHostKind.LocalProcess
 )
 
+// 获取VSCode API并初始化演示功能
 void getApi().then(async (vscode) => {
   if (!useHtmlFileSystemProvider) {
     const mainModelUri = vscode.Uri.file('/workspace/test.js')
@@ -73,6 +82,7 @@ void getApi().then(async (vscode) => {
       vscode.workspace.openTextDocument(monaco.Uri.file('/workspace/test_readonly.js')) // open the file so vscode sees it's locked
     ])
 
+    // 创建演示用的诊断信息集合
     const diagnostics = vscode.languages.createDiagnosticCollection('demo')
     diagnostics.set(mainModelUri, [
       {
@@ -85,6 +95,7 @@ void getApi().then(async (vscode) => {
     ])
   }
 
+  // 切换完整工作台模式的按钮事件处理
   document.querySelector('#toggleFullWorkbench')!.addEventListener('click', async () => {
     const url = new URL(window.location.href)
     if (url.searchParams.get('mode') === 'full-workbench') {
@@ -95,12 +106,14 @@ void getApi().then(async (vscode) => {
     window.location.href = url.toString()
   })
 
+  // 重置布局的按钮事件处理
   document.querySelector('#resetLayout')!.addEventListener('click', async () => {
     const url = new URL(window.location.href)
     url.searchParams.set('resetLayout', 'true')
     window.location.href = url.toString()
   })
 
+  // 切换HTML文件系统提供者的按钮事件处理
   document.querySelector('#toggleHTMLFileSystemProvider')!.addEventListener('click', async () => {
     const url = new URL(window.location.href)
     if (url.searchParams.has('htmlFileSystemProvider')) {
