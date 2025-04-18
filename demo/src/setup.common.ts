@@ -87,6 +87,8 @@ import { TerminalBackend } from './features/terminal'
 import { workerConfig } from './tools/extHostWorker'
 import 'vscode/localExtensionHost'
 
+console.log(vscode.version); // 输出客户端版本信息
+
 const url = new URL(document.location.href)
 const params = url.searchParams
 export const remoteAuthority = params.get('remoteAuthority') ?? undefined
@@ -390,7 +392,9 @@ export const constructOptions: IWorkbenchConstructionOptions = {
       extensionUrlTemplate: 'https://open-vsx.org/vscode/gallery/{publisher}/{name}/latest', // https://github.com/eclipse/openvsx/issues/1036#issuecomment-2476449435
       controlUrl: '',
       nlsBaseUrl: ''
-    }
+    },
+    version: '1.99.2',
+    commit: '4949701c880d4bdb949e3c0e6b400288da7f474b',
   }
 }
 
