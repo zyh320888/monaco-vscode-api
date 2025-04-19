@@ -173,4 +173,24 @@ registerEditorSerializer(
   }
 )
 
+
+// 辅助栏视图注册示例
+registerCustomView({
+  id: 'custom-auxiliary-view',
+  name: 'Custom Auxiliary View',
+  location: ViewContainerLocation.AuxiliaryBar, // 关键区别：指定为辅助栏
+  renderBody(container) {
+    container.innerHTML = 'This is a custom auxiliary bar view';
+    return { dispose() {} };
+  },
+  icon: '$(debug)',
+  actions: [{
+    id: 'auxiliary-action',
+    title: 'Auxiliary Action',
+    run: async (accessor) => {
+      console.log('Auxiliary action triggered');
+    }
+  }]
+});
+
 export { CustomEditorInput }
