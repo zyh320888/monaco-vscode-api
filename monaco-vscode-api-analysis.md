@@ -139,6 +139,100 @@ class TerminalBackend extends SimpleTerminalBackend {
 }
 ```
 
+### 2.6 视图设置模块 (setup.views.ts)
+- 负责工作区布局初始化和视图组件管理
+- 主要功能：
+  - 创建主容器元素并设置工作区HTML结构(41-117行)
+  - 初始化Monaco服务并覆盖默认服务(122-135行)
+  - 配置工作区各部分的显示和布局(150-210行)
+    - 动态绑定侧边栏、活动栏和辅助栏
+      - **辅助栏(AuxiliaryBar)**:
+        - 位于工作区右侧(默认)或左侧
+        - 与侧边栏位置相反(当侧边栏在左侧时，辅助栏在右侧)
+        - 宽度限制为300px(见HTML结构定义)
+        - 通过Parts.AUXILIARYBAR_PART标识
+        - 可通过#toggleAuxiliary按钮切换显示/隐藏
+        - 主要用途：
+          * 显示辅助工具面板
+          * 提供额外的编辑功能
+          * 作为次要信息展示区域
+        - **位置设置机制**:
+          * 通过`attachPart`方法绑定到DOM元素(189行)
+          * 使用动态选择器`#auxiliaryBar`或`#auxiliaryBar-left`(183行)
+          * 可见性通过`onPartVisibilityChange`事件控制(204-208行)
+          * 位置变化时自动重新绑定(192-195行)
+        - **内容贡献机制**:
+          * 扩展通过`contributes.viewsContainers`和`contributes.views`在package.json中声明
+          * 示例配置:
+            ```json
+            "contributes": {
+              "viewsContainers": {
+                "auxiliarybar": [{
+                  "id": "demo-auxiliary",
+                  "title": "Demo Auxiliary",
+                  "icon": "$(debug)"
+                }]
+              },
+              "views": {
+                "demo-auxiliary": [{
+                  "id": "demo.view",
+                  "name": "Demo View"
+                }]
+              }
+            }
+            ```
+          * 通过`registerCustomView`API动态注册:
+            ```typescript
+            registerCustomView({
+              id: 'custom-auxiliary-view',
+              name: 'Custom Auxiliary View',
+              location: ViewContainerLocation.AuxiliaryBar,
+              renderBody(container) {
+                // 渲染自定义内容
+              }
+            })
+            ```
+          * 内容可见性通过`layoutService.setPartHidden`控制
+          * 典型使用场景:
+            - 调试工具面板
+            - 版本控制视图
+            - 测试结果展示
+            - 扩展自定义工具窗口
+    - 处理位置变化和可见性控制
+  - 提供存储清除功能(229-232行)
+  - 注册演示扩展(235-245行)
+
+关键实现：
+```typescript
+// 动态组件绑定示例
+for (const config of [
+  {
+    part: Parts.SIDEBAR_PART,
+    get element() {
+      return getSideBarPosition() === Position.LEFT ? '#sidebar' : '#sidebar-right'
+    },
+    onDidElementChange: onDidChangeSideBarPosition
+  }
+]) {
+  attachPart(config.part, document.querySelector(config.element)!)
+  onPartVisibilityChange(config.part, (visible) => {
+    document.querySelector(config.element)!.style.display = visible ? 'block' : 'none'
+  })
+}
+
+// 存储清除功能
+export async function clearStorage(): Promise<void> {
+  await userDataProvider.reset()
+  await ((await getService(IStorageService)) as BrowserStorageService).clear()
+}
+```
+
+设计特点：
+- 动态布局管理：组件位置可动态调整
+- 响应式设计：自动适应布局变化
+- 模块化结构：各功能独立实现
+- 扩展支持：提供默认API扩展注册
+
 ## 3. 配置系统
 
 - 用户配置和快捷键分别存储

@@ -73,14 +73,14 @@ const settingsModelReference = await monaco.editor.createModelReference(
   defaultUserConfigurationFile
 )
 
-// 更新设置脏标记状态
-function updateSettingsDirty() {
-  document.getElementById('settings-dirty')!.style.display = settingsModelReference.object.isDirty()
-    ? 'inline'
-    : 'none'
-}
-updateSettingsDirty()
-settingsModelReference.object.onDidChangeDirty(updateSettingsDirty)
+// // 更新设置脏标记状态
+// function updateSettingsDirty() {
+//   document.getElementById('settings-dirty')!.style.display = settingsModelReference.object.isDirty()
+//     ? 'inline'
+//     : 'none'
+// }
+// updateSettingsDirty()
+// settingsModelReference.object.onDidChangeDirty(updateSettingsDirty)
 
 // 创建设置编辑器实例
 const settingEditor = monaco.editor.create(settingsEditorEl, {
