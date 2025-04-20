@@ -106,7 +106,7 @@ export default defineConfig({
         target: 'ws://localhost:23964',
         ws: true,
         changeOrigin: true
-      }
+      },
     },
     fs: {
       allow: ['../'] // allow to load codicon.ttf from monaco-editor in the parent folder

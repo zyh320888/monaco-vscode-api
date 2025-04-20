@@ -6,3 +6,4 @@ vscode-default-extensions/
 dist/
 vscode-server/
 demo/src/features/rooveterinaryinc.roo-cline-3.12.3
+demo-npm/src/features/rooveterinaryinc.roo-cline-3.12.3
