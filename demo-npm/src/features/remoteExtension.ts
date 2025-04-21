@@ -15,7 +15,7 @@ if (window.rootDirectory != null) {
   //   .catch(err => console.error('示例扩展加载失败:', err))
   
   // 注册Roo-Code扩展
-  const rooExtension = await registerRemoteExtension(`${window.rootDirectory}/src/features/extensions/rooveterinaryinc.roo-cline-3.12.3/`)
+  const rooExtension = await registerRemoteExtension(`${window.rootDirectory}/src/features/extensions/roo-cline/`)
   rooExtension.whenReady()
     .then(() => {
       console.log('Roo-Code远程扩展加载成功')
