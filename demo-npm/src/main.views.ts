@@ -141,3 +141,40 @@ if (remoteAuthority != null) {
 //   await StandaloneServices.get(IPreferencesService).openGlobalKeybindingSettings(false)
 //   window.scrollTo({ top: 0, behavior: 'smooth' })
 // })
+
+// 找到 id 为 activityBar 的 div 元素
+const activityBar = document.querySelector('#activityBar')
+
+// 找到 role 为 menubar 的元素
+const menubar = activityBar?.querySelector('div[role="menubar"]') as HTMLElement | null
+// 隐藏 menubar
+if (menubar) {
+  menubar.style.display = 'none'
+}
+
+// 找到 class 中 composite-bar 的 div 元素
+const compositeBar = activityBar?.querySelector('div.composite-bar')
+
+
+// 找到 class中 monaco-action-bar 的元素 的 子元素 ul
+const monacoActionTabListBar = compositeBar?.querySelector('.monaco-action-bar')
+if (monacoActionTabListBar) {
+  // 找到 ul 的 role=tablist 的元素
+  const tablist = monacoActionTabListBar.querySelector('ul[role="tablist"]')
+  console.log('tablist', tablist)
+  // 隐藏 tablist 的 子元素 li, 第4，5个
+  tablist?.querySelectorAll('li').forEach((li, index) => {
+    if (index === 3 || index === 4) {
+      li.style.display = 'none'
+    }
+  })
+
+}
+
+
+// 找到 ul 的 role=toolbar 的元素
+const toolbar = activityBar?.querySelector('ul[role="toolbar"]') as HTMLElement | null
+// 隐藏 toolbar 自己
+if (toolbar) {  
+  toolbar.style.display = 'none'
+}

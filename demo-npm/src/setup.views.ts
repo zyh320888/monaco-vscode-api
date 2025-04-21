@@ -112,7 +112,6 @@ await initializeMonacoService(
     ...commonServices,
     // ...getViewsServiceOverride(openNewCodeEditor, undefined),
     ...getViewsServiceOverride(),
-
     ...getQuickAccessServiceOverride({
       isKeybindingConfigurationVisible: isEditorPartVisible,
       shouldUseGlobalPicker: (_editor, isStandalone) => !isStandalone && isEditorPartVisible()
@@ -232,5 +231,6 @@ export async function clearStorage(): Promise<void> {
 //   },
 //   ExtensionHostKind.LocalProcess
 // ).setAsDefaultApi()
+
 
 export { remoteAuthority }

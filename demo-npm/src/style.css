@@ -20,7 +20,8 @@ body {
 #editors {
   position: relative;
   min-width: 0;
-  height: 45vh;
+  /* height: 45vh; */
+  height: 100%;
   border: 1px solid var(--vscode-editorWidget-border);
 }
 
