@@ -17,11 +17,12 @@
     "accessibility.signals.onDebugBreak": {
         "sound": "on"
     },
-    "files.autoSave": "off",
+    "files.autoSave": "on",
     "debug.toolBarLocation": "docked",
     "editor.experimental.asyncTokenization": true,
     "terminal.integrated.tabs.title": "${sequence}",
-    "typescript.tsserver.log": "normal",
+    "typescript.tsserver.log": "off",
     "workbench.sideBar.location": "left",
     "editor.experimental.preferTreeSitter": ["typescript"]
+    
 }

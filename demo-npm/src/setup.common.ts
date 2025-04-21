@@ -493,7 +493,8 @@ export const commonServices: IEditorOverrideServices = {
   ...getLanguageDetectionWorkerServiceOverride(), // 语言检测服务覆盖 - 自动检测文件语言
   ...getStorageServiceOverride({ // 存储服务覆盖 - 管理本地存储
     fallbackOverride: {
-      'workbench.activity.showAccounts': false
+      'workbench.activity.showAccounts': false,
+      "views.customizations": "{\"viewContainerLocations\":{\"workbench.view.extension.roo-cline-ActivityBar\":2},\"viewLocations\":{},\"viewContainerBadgeEnablementStates\":{}}"
     }
   }),
   ...getRemoteAgentServiceOverride({ scanRemoteExtensions: true }), // 远程代理服务覆盖 - 处理远程连接
