@@ -51,6 +51,20 @@ server: {
 ```
 
 
+### 去掉deno 扩展的欢迎页面
+
+修改
+demo-npm/src/features/extensions/denoland.vscode-deno-3.43.6-universal/client/dist/main.js
+
+SEARCH
+==========
+showWelcomePageIfFirstUse(context, extensionContext2);
+==========
+// showWelcomePageIfFirstUse(context, extensionContext2);
+
+
+
+
 
 
 
