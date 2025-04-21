@@ -14,8 +14,14 @@ if (window.rootDirectory != null) {
   //   .catch(err => console.error('示例扩展加载失败:', err))
   
   // 注册Roo-Code扩展
-  const rooExtension = await registerRemoteExtension(`${window.rootDirectory}/src/features/rooveterinaryinc.roo-cline-3.12.3/`)
+  const rooExtension = await registerRemoteExtension(`${window.rootDirectory}/src/features/extensions/rooveterinaryinc.roo-cline-3.12.3/`)
   rooExtension.whenReady()
     .then(() => console.log('Roo-Code远程扩展加载成功'))
     .catch(err => console.error('Roo-Code远程扩展加载失败:', err))
+
+  // 注册Deno扩展
+  const denoExtension = await registerRemoteExtension(`${window.rootDirectory}/src/features/extensions/denoland.vscode-deno-3.43.6-universal/`)
+  denoExtension.whenReady()
+    .then(() => console.log('Deno远程扩展加载成功'))
+    .catch(err => console.error('Deno远程扩展加载失败:', err))
 }

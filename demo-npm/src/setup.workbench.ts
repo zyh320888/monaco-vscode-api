@@ -1,29 +1,29 @@
 import {
-  IStorageService,
-  IWorkbenchLayoutService,
-  getService,
+  // IStorageService,
+  // IWorkbenchLayoutService,
+  // getService,
   initialize as initializeMonacoService
 } from '@codingame/monaco-vscode-api'
 import getWorkbenchServiceOverride, {
-  Parts
+  // Parts
 } from '@codingame/monaco-vscode-workbench-service-override'
 import getQuickAccessServiceOverride from '@codingame/monaco-vscode-quickaccess-service-override'
-import { BrowserStorageService } from '@codingame/monaco-vscode-storage-service-override'
-import { ExtensionHostKind } from '@codingame/monaco-vscode-extensions-service-override'
-import { registerExtension } from '@codingame/monaco-vscode-api/extensions'
-import './features/customView.workbench'
+// import { BrowserStorageService } from '@codingame/monaco-vscode-storage-service-override'
+// import { ExtensionHostKind } from '@codingame/monaco-vscode-extensions-service-override'
+// import { registerExtension } from '@codingame/monaco-vscode-api/extensions'
+// import './features/customView.workbench'
 import {
   commonServices,
   constructOptions,
   envOptions,
   remoteAuthority,
-  userDataProvider
+  // userDataProvider
 } from './setup.common'
 
-const container = document.createElement('div')
-container.style.height = '100vh'
+// const container = document.createElement('div')
+// container.style.height = '100vh'
 
-document.body.replaceChildren(container)
+// document.body.replaceChildren(container)
 
 // const buttons = document.createElement('div')
 // buttons.innerHTML = `
@@ -49,10 +49,14 @@ await initializeMonacoService(
       shouldUseGlobalPicker: () => true
     })
   },
-  container,
+  // container,
+  document.body,
   constructOptions,
   envOptions
 )
+
+// 隐藏标题栏
+
 
 // const layoutService = await getService(IWorkbenchLayoutService)
 // document.querySelector('#togglePanel')!.addEventListener('click', async () => {
@@ -66,10 +70,10 @@ await initializeMonacoService(
 //   )
 // })
 
-export async function clearStorage(): Promise<void> {
-  await userDataProvider.reset()
-  await ((await getService(IStorageService)) as BrowserStorageService).clear()
-}
+// export async function clearStorage(): Promise<void> {
+//   await userDataProvider.reset()
+//   await ((await getService(IStorageService)) as BrowserStorageService).clear()
+// }
 
 // await registerExtension(
 //   {

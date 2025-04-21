@@ -10,21 +10,21 @@
  */
 // 导入配置服务覆盖模块
 import getConfigurationServiceOverride, {
-  IStoredWorkspace,
+  // IStoredWorkspace,
   initUserConfiguration
 } from '@codingame/monaco-vscode-configuration-service-override'
 import getKeybindingsServiceOverride, {
   initUserKeybindings
 } from '@codingame/monaco-vscode-keybindings-service-override'
-import {
-  RegisteredFileSystemProvider,
-  RegisteredMemoryFile,
-  RegisteredReadOnlyFile,
-  createIndexedDBProviders,
-  registerHTMLFileSystemProvider,
-  registerFileSystemOverlay,
-  initFile
-} from '@codingame/monaco-vscode-files-service-override'
+// import {
+//   RegisteredFileSystemProvider,
+//   RegisteredMemoryFile,
+//   RegisteredReadOnlyFile,
+//   createIndexedDBProviders,
+//   registerHTMLFileSystemProvider,
+//   registerFileSystemOverlay,
+//   initFile
+// } from '@codingame/monaco-vscode-files-service-override'
 // 导入monaco编辑器核心模块
 import * as monaco from 'monaco-editor'
 import {
@@ -117,172 +117,172 @@ params.delete('resetLayout')
 window.history.replaceState({}, document.title, url.href)
 
 // 默认工作区文件路径
-export let workspaceFile = monaco.Uri.file('/workspace.code-workspace')
+// export let workspaceFile = monaco.Uri.file('/workspace.code-workspace')
 
 // 创建IndexedDB存储提供者
-export const userDataProvider = await createIndexedDBProviders()
+// export const userDataProvider = await createIndexedDBProviders()
 
-if (useHtmlFileSystemProvider) {
-  workspaceFile = monaco.Uri.from({ scheme: 'tmp', path: '/test.code-workspace' })
-  await initFile(
-    workspaceFile,
-    JSON.stringify(
-      <IStoredWorkspace>{
-        folders: []
-      },
-      null,
-      2
-    )
-  )
+// if (useHtmlFileSystemProvider) {
+//   workspaceFile = monaco.Uri.from({ scheme: 'tmp', path: '/test.code-workspace' })
+//   await initFile(
+//     workspaceFile,
+//     JSON.stringify(
+//       <IStoredWorkspace>{
+//         folders: []
+//       },
+//       null,
+//       2
+//     )
+//   )
 
-  registerHTMLFileSystemProvider()
-} else {
-  // 创建注册文件系统提供者(非只读模式)
-  const fileSystemProvider = new RegisteredFileSystemProvider(false)
+//   registerHTMLFileSystemProvider()
+// } else {
+//   // 创建注册文件系统提供者(非只读模式)
+//   const fileSystemProvider = new RegisteredFileSystemProvider(false)
 
-  fileSystemProvider.registerFile(
-    new RegisteredMemoryFile(
-      vscode.Uri.file('/workspace/test.js'),
-      `// import anotherfile
-let variable = 1
-function inc () {
-  variable++
-}
+//   fileSystemProvider.registerFile(
+//     new RegisteredMemoryFile(
+//       vscode.Uri.file('/workspace/test.js'),
+//       `// import anotherfile
+// let variable = 1
+// function inc () {
+//   variable++
+// }
 
-while (variable < 5000) {
-  inc()
-  console.log('Hello world', variable);
-}`
-    )
-  )
+// while (variable < 5000) {
+//   inc()
+//   console.log('Hello world', variable);
+// }`
+//     )
+//   )
 
-  const content = new TextEncoder().encode('This is a readonly static file')
-  fileSystemProvider.registerFile(
-    new RegisteredReadOnlyFile(
-      vscode.Uri.file('/workspace/test_readonly.js'),
-      async () => content,
-      content.length
-    )
-  )
+//   const content = new TextEncoder().encode('This is a readonly static file')
+//   fileSystemProvider.registerFile(
+//     new RegisteredReadOnlyFile(
+//       vscode.Uri.file('/workspace/test_readonly.js'),
+//       async () => content,
+//       content.length
+//     )
+//   )
 
-  fileSystemProvider.registerFile(
-    new RegisteredMemoryFile(
-      vscode.Uri.file('/workspace/jsconfig.json'),
-      `{
-  "compilerOptions": {
-    "target": "es2020",
-    "module": "esnext",
-    "lib": [
-      "es2021",
-      "DOM"
-    ]
-  }
-}`
-    )
-  )
+//   fileSystemProvider.registerFile(
+//     new RegisteredMemoryFile(
+//       vscode.Uri.file('/workspace/jsconfig.json'),
+//       `{
+//   "compilerOptions": {
+//     "target": "es2020",
+//     "module": "esnext",
+//     "lib": [
+//       "es2021",
+//       "DOM"
+//     ]
+//   }
+// }`
+//     )
+//   )
 
-  fileSystemProvider.registerFile(
-    new RegisteredMemoryFile(
-      vscode.Uri.file('/workspace/index.html'),
-      `
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>monaco-vscode-api demo</title>
-    <link rel="stylesheet" href="test.css">
-  </head>
-  <body>
-    <style type="text/css">
-      h1 {
-        color: DeepSkyBlue;
-      }
-    </style>
+//   fileSystemProvider.registerFile(
+//     new RegisteredMemoryFile(
+//       vscode.Uri.file('/workspace/index.html'),
+//       `
+// <!DOCTYPE html>
+// <html lang="en">
+//   <head>
+//     <meta charset="UTF-8" />
+//     <title>monaco-vscode-api demo</title>
+//     <link rel="stylesheet" href="test.css">
+//   </head>
+//   <body>
+//     <style type="text/css">
+//       h1 {
+//         color: DeepSkyBlue;
+//       }
+//     </style>
 
-    <h1>Hello, world!</h1>
-  </body>
-</html>`
-    )
-  )
+//     <h1>Hello, world!</h1>
+//   </body>
+// </html>`
+//     )
+//   )
 
-  fileSystemProvider.registerFile(
-    new RegisteredMemoryFile(
-      vscode.Uri.file('/workspace/test.md'),
-      `
-***Hello World***
+//   fileSystemProvider.registerFile(
+//     new RegisteredMemoryFile(
+//       vscode.Uri.file('/workspace/test.md'),
+//       `
+// ***Hello World***
 
-Math block:
-$$
-\\displaystyle
-\\left( \\sum_{k=1}^n a_k b_k \\right)^2
-\\leq
-\\left( \\sum_{k=1}^n a_k^2 \\right)
-\\left( \\sum_{k=1}^n b_k^2 \\right)
-$$
+// Math block:
+// $$
+// \\displaystyle
+// \\left( \\sum_{k=1}^n a_k b_k \\right)^2
+// \\leq
+// \\left( \\sum_{k=1}^n a_k^2 \\right)
+// \\left( \\sum_{k=1}^n b_k^2 \\right)
+// $$
 
-# Easy Math
+// # Easy Math
 
-2 + 2 = 4 // this test will pass
-2 + 2 = 5 // this test will fail
+// 2 + 2 = 4 // this test will pass
+// 2 + 2 = 5 // this test will fail
 
-# Harder Math
+// # Harder Math
 
-230230 + 5819123 = 6049353
-`
-    )
-  )
+// 230230 + 5819123 = 6049353
+// `
+//     )
+//   )
 
-  fileSystemProvider.registerFile(
-    new RegisteredMemoryFile(
-      vscode.Uri.file('/workspace/test.customeditor'),
-      `
-Custom Editor!`
-    )
-  )
+//   fileSystemProvider.registerFile(
+//     new RegisteredMemoryFile(
+//       vscode.Uri.file('/workspace/test.customeditor'),
+//       `
+// Custom Editor!`
+//     )
+//   )
 
-  fileSystemProvider.registerFile(
-    new RegisteredMemoryFile(
-      vscode.Uri.file('/workspace/test.css'),
-      `
-h1 {
-  color: DeepSkyBlue;
-}`
-    )
-  )
+//   fileSystemProvider.registerFile(
+//     new RegisteredMemoryFile(
+//       vscode.Uri.file('/workspace/test.css'),
+//       `
+// h1 {
+//   color: DeepSkyBlue;
+// }`
+//     )
+//   )
 
-  // Use a workspace file to be able to add another folder later (for the "Attach filesystem" button)
-  fileSystemProvider.registerFile(
-    new RegisteredMemoryFile(
-      workspaceFile,
-      JSON.stringify(
-        <IStoredWorkspace>{
-          folders: [
-            {
-              path: '/workspace'
-            }
-          ]
-        },
-        null,
-        2
-      )
-    )
-  )
+//   // Use a workspace file to be able to add another folder later (for the "Attach filesystem" button)
+//   fileSystemProvider.registerFile(
+//     new RegisteredMemoryFile(
+//       workspaceFile,
+//       JSON.stringify(
+//         <IStoredWorkspace>{
+//           folders: [
+//             {
+//               path: '/workspace'
+//             }
+//           ]
+//         },
+//         null,
+//         2
+//       )
+//     )
+//   )
 
-  fileSystemProvider.registerFile(
-    new RegisteredMemoryFile(
-      monaco.Uri.file('/workspace/.vscode/extensions.json'),
-      JSON.stringify(
-        {
-          recommendations: ['vscodevim.vim']
-        },
-        null,
-        2
-      )
-    )
-  )
+//   fileSystemProvider.registerFile(
+//     new RegisteredMemoryFile(
+//       monaco.Uri.file('/workspace/.vscode/extensions.json'),
+//       JSON.stringify(
+//         {
+//           recommendations: ['vscodevim.vim']
+//         },
+//         null,
+//         2
+//       )
+//     )
+//   )
 
-  registerFileSystemOverlay(1, fileSystemProvider)
-}
+//   registerFileSystemOverlay(1, fileSystemProvider)
+// }
 
 /**
  * Worker加载器配置
@@ -344,83 +344,107 @@ await Promise.all([
  * 配置VSCode工作台的核心参数
  */
 // 工作台构造选项配置
+/**
+ * 工作台构造选项配置
+ * 定义VSCode工作台的核心参数和行为
+ */
 export const constructOptions: IWorkbenchConstructionOptions = {
+  // 远程授权信息，用于远程连接场景
   remoteAuthority,
-  enableWorkspaceTrust: true,
+  // 启用工作区信任功能 (true=启用)
+  // enableWorkspaceTrust: true,
+  // 连接令牌，用于安全验证
   connectionToken,
+  // 窗口指示器配置 (显示在窗口标题栏)
   windowIndicator: {
-    label: 'monaco-vscode-api',
-    tooltip: '',
-    command: ''
+    label: 'monaco-vscode-api2232323', // 显示标签文本
+    tooltip: '',                // 悬停提示文本
+    command: ''                 // 点击执行的命令
   },
+  // 工作区提供者配置
   workspaceProvider: {
-    trusted: true,
+    trusted: true, // 工作区是否被信任
+    // 打开工作区的方法
     async open() {
       window.open(window.location.href)
       return true
     },
+    // 工作区URI配置
     workspace:
-      remotePath == null
-        ? {
-            workspaceUri: workspaceFile
-          }
-        : {
+      // remotePath == null
+      //   ? {
+      //       // 本地工作区URI配置
+      //       workspaceUri: workspaceFile
+      //     }
+      //   : 
+        {
+            // 远程工作区文件夹URI配置
             folderUri: monaco.Uri.from({
-              scheme: 'vscode-remote',
-              path: remotePath,
-              authority: remoteAuthority
+              scheme: 'vscode-remote', // 协议方案
+              path: remotePath,       // 远程路径
+              authority: remoteAuthority // 远程授权
             })
           }
   },
+  // 开发选项配置
   developmentOptions: {
-    logLevel: LogLevel.Info // Default value
+    logLevel: LogLevel.Info // 日志级别 (默认Info级别)
   },
+  // 默认配置项
   configurationDefaults: {
-    'window.title': 'Monaco-Vscode-Api${separator}${dirty}${activeEditorShort}'
+    // 窗口标题格式 (支持变量: ${separator}=分隔符, ${dirty}=修改标记, ${activeEditorShort}=当前编辑器名称)
+    'window.title': 'Monaco-Vscode-Api34535${separator}${dirty}${activeEditorShort}'
   },
+  // 默认布局配置
   defaultLayout: {
-    editors: useHtmlFileSystemProvider
-      ? undefined
-      : [
-          {
-            uri: monaco.Uri.file('/workspace/test.js'),
-            viewColumn: 1
-          },
-          {
-            uri: monaco.Uri.file('/workspace/test.md'),
-            viewColumn: 2
-          }
-        ],
+    // 默认打开的编辑器配置
+    // editors: useHtmlFileSystemProvider
+    //   ? undefined
+    //   : [
+    //       {
+    //         uri: monaco.Uri.file('/workspace/test.js'), // 测试JS文件URI
+    //         viewColumn: 1                              // 显示在第一视图列
+    //       },
+    //       {
+    //         uri: monaco.Uri.file('/workspace/test.md'), // 测试Markdown文件URI
+    //         viewColumn: 2                               // 显示在第二视图列
+    //       }
+    //     ],
+    // 布局结构定义
     layout: useHtmlFileSystemProvider
       ? undefined
       : {
           editors: {
-            orientation: 0,
-            groups: [{ size: 1 }, { size: 1 }]
+            orientation: 0, // 编辑器方向 (0=水平排列，1=垂直排列)
+            groups: [{ size: 1 }, { size: 1 }] // 编辑器组大小比例
           }
         },
+    // 侧边栏视图配置
     views: [
       {
-        id: 'custom-view'
+        id: 'custom-view' // 自定义视图ID
       }
     ],
-    force: resetLayout
+    force: resetLayout // 是否强制重置布局 (true=重置)
   },
-  welcomeBanner: {
-    message: 'Welcome in monaco-vscode-api demo'
-  },
+  // // 欢迎横幅配置
+  // welcomeBanner: {
+  //   message: 'Welcome in monaco-vscode-api demo' // 欢迎消息文本
+  // },
+  // 产品配置信息
   productConfiguration: {
-    nameShort: 'monaco-vscode-api',
-    nameLong: 'monaco-vscode-api',
+    nameShort: 'monaco-vscode-api223', // 产品简称
+    nameLong: 'monaco-vscode-api433445353',  // 产品全称
+    // 扩展市场配置
     extensionsGallery: {
-      serviceUrl: 'https://open-vsx.org/vscode/gallery',
-      resourceUrlTemplate: 'https://open-vsx.org/vscode/unpkg/{publisher}/{name}/{version}/{path}',
-      extensionUrlTemplate: 'https://open-vsx.org/vscode/gallery/{publisher}/{name}/latest', // https://github.com/eclipse/openvsx/issues/1036#issuecomment-2476449435
-      controlUrl: '',
-      nlsBaseUrl: ''
+      serviceUrl: 'https://open-vsx.org/vscode/gallery', // 扩展市场服务URL
+      resourceUrlTemplate: 'https://open-vsx.org/vscode/unpkg/{publisher}/{name}/{version}/{path}', // 资源URL模板
+      extensionUrlTemplate: 'https://open-vsx.org/vscode/gallery/{publisher}/{name}/latest', // 扩展详情URL模板
+      controlUrl: '', // 控制URL (保留字段)
+      nlsBaseUrl: ''  // 本地化基础URL (保留字段)
     },
-    // version: '1.99.2',
-    // commit: '4949701c880d4bdb949e3c0e6b400288da7f474b',
+    // version: '1.99.2', // 产品版本号 (注释状态)
+    // commit: '4949701c880d4bdb949e3c0e6b400288da7f474b', // 提交哈希 (注释状态)
   }
 }
 

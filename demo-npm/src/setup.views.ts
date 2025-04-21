@@ -13,9 +13,9 @@ import {
   initialize as initializeMonacoService
 } from '@codingame/monaco-vscode-api'
 import getQuickAccessServiceOverride from '@codingame/monaco-vscode-quickaccess-service-override'
-import { BrowserStorageService } from '@codingame/monaco-vscode-storage-service-override'
-import { ExtensionHostKind } from '@codingame/monaco-vscode-extensions-service-override'
-import { registerExtension } from '@codingame/monaco-vscode-api/extensions'
+// import { BrowserStorageService } from '@codingame/monaco-vscode-storage-service-override'
+// import { ExtensionHostKind } from '@codingame/monaco-vscode-extensions-service-override'
+// import { registerExtension } from '@codingame/monaco-vscode-api/extensions'
 import getViewsServiceOverride, {
   isEditorPartVisible,
   Parts,
@@ -27,14 +27,14 @@ import getViewsServiceOverride, {
   Position
 } from '@codingame/monaco-vscode-views-service-override'
 import { setUnexpectedErrorHandler } from '@codingame/monaco-vscode-api/monaco'
-import { openNewCodeEditor } from './features/editor'
-import './features/customView.views'
+// import { openNewCodeEditor } from './features/editor'
+// import './features/customView.views.auxiliary'
 import {
   commonServices,
   constructOptions,
   envOptions,
   remoteAuthority,
-  userDataProvider
+  // userDataProvider
 } from './setup.common'
 
 // 创建主容器元素并设置工作区HTML结构
@@ -89,21 +89,11 @@ container.innerHTML = `
   <div id="workbench-top">
     <div style="display: flex; flex: none; border: 1px solid var(--vscode-editorWidget-border)">
       <div id="activityBar"></div>
-      <div id="sidebar" style="width: 400px"></div>
+      <div id="sidebar" style="width: 300px"></div>
       <div id="auxiliaryBar-left" style="max-width: 300px"></div>
     </div>
     <div style="flex: 1; min-width: 0">
-      <h1>Editor</h1>
       <div id="editors"></div>
-
-      <button id="toggleHTMLFileSystemProvider">Toggle HTML filesystem provider</button>
-      <button id="customEditorPanel">Open custom editor panel</button>
-      <button id="clearStorage">Clear user data</button>
-      <button id="resetLayout">Reset layout</button>
-      <button id="toggleFullWorkbench">Switch to full workbench mode</button>
-      <br />
-      <button id="togglePanel">Toggle Panel</button>
-      <button id="toggleAuxiliary">Toggle Secondary Panel</button>
     </div>
     <div style="display: flex; flex: none; border: 1px solid var(--vscode-editorWidget-border);">
       <div id="sidebar-right" style="max-width: 500px"></div>
@@ -112,8 +102,6 @@ container.innerHTML = `
     </div>
   </div>
 </div>
-
-
 `
 
 document.body.append(container)
@@ -122,7 +110,8 @@ document.body.append(container)
 await initializeMonacoService(
   {
     ...commonServices,
-    ...getViewsServiceOverride(openNewCodeEditor, undefined),
+    // ...getViewsServiceOverride(openNewCodeEditor, undefined),
+    ...getViewsServiceOverride(),
 
     ...getQuickAccessServiceOverride({
       isKeybindingConfigurationVisible: isEditorPartVisible,
@@ -173,7 +162,7 @@ for (const config of [
   // 面板区域配置 - 固定位置
   // { part: Parts.PANEL_PART, element: '#panel' },
   // 编辑器区域配置 - 固定位置
-  // { part: Parts.EDITOR_PART, element: '#editors' },
+  { part: Parts.EDITOR_PART, element: '#editors' },
   // 状态栏配置 - 固定位置
   // { part: Parts.STATUSBAR_PART, element: '#statusBar' },
   {
@@ -210,38 +199,38 @@ for (const config of [
 }
 
 // 获取布局服务并设置面板切换事件
-const layoutService = await getService(IWorkbenchLayoutService)
-document.querySelector('#togglePanel')!.addEventListener('click', async () => {
-  layoutService.setPartHidden(layoutService.isVisible(Parts.PANEL_PART, window), Parts.PANEL_PART)
-})
+// const layoutService = await getService(IWorkbenchLayoutService)
+// document.querySelector('#togglePanel')!.addEventListener('click', async () => {
+//   layoutService.setPartHidden(layoutService.isVisible(Parts.PANEL_PART, window), Parts.PANEL_PART)
+// })
 
-document.querySelector('#toggleAuxiliary')!.addEventListener('click', async () => {
-  layoutService.setPartHidden(
-    layoutService.isVisible(Parts.AUXILIARYBAR_PART, window),
-    Parts.AUXILIARYBAR_PART
-  )
-})
+// document.querySelector('#toggleAuxiliary')!.addEventListener('click', async () => {
+//   layoutService.setPartHidden(
+//     layoutService.isVisible(Parts.AUXILIARYBAR_PART, window),
+//     Parts.AUXILIARYBAR_PART
+//   )
+// })
 
 /**
  * 清除存储数据
  * 重置用户数据和本地存储
  */
 export async function clearStorage(): Promise<void> {
-  await userDataProvider.reset()
-  await ((await getService(IStorageService)) as BrowserStorageService).clear()
+  // await userDataProvider.reset()
+  // await ((await getService(IStorageService)) as BrowserStorageService).clear()
 }
 
-// 注册演示扩展并设置为默认API
-await registerExtension(
-  {
-    name: 'demo',
-    publisher: 'codingame',
-    version: '1.0.0',
-    engines: {
-      vscode: '*'
-    }
-  },
-  ExtensionHostKind.LocalProcess
-).setAsDefaultApi()
+// // 注册演示扩展并设置为默认API
+// await registerExtension(
+//   {
+//     name: 'demo',
+//     publisher: 'codingame',
+//     version: '1.0.0',
+//     engines: {
+//       vscode: '*'
+//     }
+//   },
+//   ExtensionHostKind.LocalProcess
+// ).setAsDefaultApi()
 
 export { remoteAuthority }
