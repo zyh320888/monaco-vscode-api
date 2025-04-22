@@ -8,7 +8,7 @@ container.style.height = '100vh'
 document.body.append(container)
 
 // 创建最简单的编辑器实例
-const editor = monaco.editor.create(container, {
+monaco.editor.create(container, {
   value: '// 最小化配置示例\nconsole.log("Hello from minimal config")',
   language: 'javascript',
   automaticLayout: true

@@ -20,7 +20,7 @@
 // } from '@codingame/monaco-vscode-keybindings-service-override'
 
 // 导入本地工具和自定义组件
-import { clearStorage, remoteAuthority } from './setup.views'
+import { remoteAuthority } from './setup.views'
 // import { CustomEditorInput } from './features/customView.views'
 
 // // 导入默认配置和快捷键

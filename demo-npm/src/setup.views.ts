@@ -7,9 +7,9 @@
  * - 管理扩展注册和存储服务
  */
 import {
-  IStorageService,
-  IWorkbenchLayoutService,
-  getService,
+  // IStorageService,
+  // IWorkbenchLayoutService,
+  // getService,
   initialize as initializeMonacoService
 } from '@codingame/monaco-vscode-api'
 import getQuickAccessServiceOverride from '@codingame/monaco-vscode-quickaccess-service-override'

@@ -330,7 +330,7 @@ registerCustomView({
   actions: [{
     id: 'auxiliary-action',
     title: 'Auxiliary Action',
-    run: async (accessor) => {
+    run: async () => {
       console.log('Auxiliary action triggered');
     }
   }]
