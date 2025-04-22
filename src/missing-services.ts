@@ -7148,27 +7148,8 @@ class AiEmbeddingVectorService implements IAiEmbeddingVectorService {
 }
 registerSingleton(IAiEmbeddingVectorService, AiEmbeddingVectorService, InstantiationType.Delayed)
 
-class SignService implements ISignService {
-  _serviceBrand: undefined
-  private static _nextId = 1
-
-  async createNewMessage(value: string): Promise<IMessage> {
-    const id = String(SignService._nextId++)
-    return {
-      id,
-      data: value
-    }
-  }
-
-  async validate(): Promise<boolean> {
-    return true
-  }
-
-  async sign(value: string): Promise<string> {
-    return value
-  }
-}
-registerSingleton(ISignService, SignService, InstantiationType.Delayed)
+import { SignService } from 'vscode/src/vs/platform/sign/browser/signService';
+registerSingleton(ISignService, SignService, InstantiationType.Delayed);
 
 class TestingContinuousRunService implements ITestingContinuousRunService {
   _serviceBrand: undefined

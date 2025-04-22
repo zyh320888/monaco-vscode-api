@@ -445,7 +445,16 @@ export const constructOptions: IWorkbenchConstructionOptions = {
     },
     // version: '1.99.2', // 产品版本号 (注释状态)
     // commit: '4949701c880d4bdb949e3c0e6b400288da7f474b', // 提交哈希 (注释状态)
-  }
+    serverLicense: [
+      "*",
+      "* Visual Studio Code Server",
+      "*",
+      "* By using the software, you agree to",
+      "* the Visual Studio Code Server License Terms (https://aka.ms/vscode-server-license) and",
+      "* the Microsoft Privacy Statement (https://privacy.microsoft.com/en-US/privacystatement).",
+      "*"
+    ]
+  },
 }
 
 /**

@@ -9,6 +9,7 @@ PORT=${2:-23964}                     # 服务端口
 # HOST=${3:-"0.0.0.0"}                # 监听地址
 HOST=${3:-"localhost"}                # 监听地址
 TOKEN=${4:-"your-token"}              # 连接令牌
+SERVER_DATA_DIR=${5:-"./vscode-server-data"}              # 服务器数据目录
 # 检查端口是否可用
 check_port() {
     if command -v nc &> /dev/null && nc -z $HOST $PORT &>/dev/null; then
@@ -42,8 +43,8 @@ start_server() {
     check_port
     
     echo "启动VSCode server (端口: $PORT)..."
-    ./bin/code-server --port $PORT --without-connection-token --accept-server-license-terms --host $HOST
-    # ./bin/code-server --port $PORT --connection-token $TOKEN --accept-server-license-terms --host $HOST
+    # ./bin/code-server --port $PORT --without-connection-token --accept-server-license-terms --host $HOST
+    ./bin/code-server --port $PORT --connection-token "$TOKEN" --accept-server-license-terms --host $HOST --server-data-dir "$SERVER_DATA_DIR"
 }
 
 start_server

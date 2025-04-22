@@ -63,9 +63,35 @@ showWelcomePageIfFirstUse(context, extensionContext2);
 // showWelcomePageIfFirstUse(context, extensionContext2);
 
 
+### 增加vsad支持
+demo-npm/node_modules 复制入 vsad
 
+底部加入 define 来支持 amd
+demo-npm/node_modules/vsda/rust/web/vsda.js
 
+```js
+// AMD loader support
+if (typeof define === 'function' && define.amd) {
+  define(function() {
+    return vsda_web;
+  });
+}
+```
 
+demo-npm/node_modules/@codingame/monaco-vscode-api/vscode/src/vs/amdX.js
+底部增加
+```js
 
+export const canASAR = false; // TODO@esm: ASAR disabled in ESM
+export function resolveAmdNodeModulePath(nodeModuleName, pathInsideNodeModule) {
+    const product = globalThis._VSCODE_PRODUCT_JSON;
+    const isBuilt = Boolean((product ?? globalThis.vscode?.context?.configuration()?.product)?.commit);
+    const useASAR = (canASAR && isBuilt && !platform.isWeb);
+    const nodeModulePath = `${nodeModuleName}/${pathInsideNodeModule}`;
+    const actualNodeModulesPath = (useASAR ? nodeModulesAsarPath : nodeModulesPath);
+    const resourcePath = `${actualNodeModulesPath}/${nodeModulePath}`;
+    return FileAccess.asBrowserUri(resourcePath).toString(true);
+}
+```
 
 
