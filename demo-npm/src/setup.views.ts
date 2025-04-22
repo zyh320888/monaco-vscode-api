@@ -36,6 +36,7 @@ import {
   remoteAuthority,
   // userDataProvider
 } from './setup.common'
+// import { editor } from 'monaco-editor'
 
 // 创建主容器元素并设置工作区HTML结构
 // const container = document.createElement('div')
@@ -261,6 +262,8 @@ const appendTestModeControls = () => {
   `
   // document.body.append(modeControls)
   document.getElementById('workbench-container')?.append(modeControls)
+
+
 }
 // // 模式切换事件监听
 // document.getElementById('previewModeBtn')?.addEventListener('click', () => {
@@ -340,6 +343,22 @@ const editorMode: EditorMode = {
   appendTestModeControls: () => {
     console.log('appendTestModeControls')
     appendTestModeControls()
+
+    // 模式切换事件监听
+    document.getElementById('previewModeBtn')?.addEventListener('click', () => {
+      editorMode.togglePreviewMode()
+    })
+
+    document.getElementById('codeModeBtn')?.addEventListener('click', () => {
+      editorMode.toggleCodeMode()
+    })
+
+    document.getElementById('splitModeBtn')?.addEventListener('click', () => {
+      editorMode.toggleSplitMode()
+    })
+    document.querySelector('#toggleAuxiliary')!.addEventListener('click', async () => {
+      editorMode.toggleAuxiliary()
+    })
   }, 
 }
 
