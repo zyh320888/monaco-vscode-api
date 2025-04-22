@@ -1,6 +1,8 @@
 import { defineConfig } from 'vite'
 import * as fs from 'fs'
 import path from 'path'
+// import importMetaUrlPlugin from '@codingame/esbuild-import-meta-url-plugin'
+// import importMetaUrlPlugin from './esbuild-import-meta-url-plugin'
 
 const pkg = JSON.parse(
   fs.readFileSync(new URL('./package.json', import.meta.url).pathname).toString()
@@ -11,16 +13,44 @@ const localDependencies = Object.entries(pkg.dependencies as Record<string, stri
   .map(([name]) => name)
 
 export default defineConfig({
+  // assetsInclude: ['**/*.wasm', '**/*.html'],
   build: {
     lib: {
-      entry: path.resolve(__dirname, 'src/main.ts'),
+      entry: path.resolve(__dirname, 'src/loader.ts'),
       name: pkg.name,
       fileName: () => `${pkg.name}.esm.js`,
       formats: ['es']
     },
     target: 'esnext',
     minify: true,
-    sourcemap: true
+    sourcemap: true,
+    // rollupOptions: {
+    //   // external(source, importer, isResolved) {
+    //   //   console.log('source', source)
+    //   //   console.log('importer', importer)
+    //   //   console.log('isResolved', isResolved)
+    //   //   return false
+    //   // },
+    //   // plugins: [
+    //   //   {
+    //   //     name: 'vsda-web-resolver',
+    //   //     resolveId(source) {
+    //   //       console.log('source', source)
+    //   //       if (source === 'vsda') {
+    //   //         return path.resolve(__dirname, 'node_modules/vsda/rust/web/vsda.js')
+    //   //       }
+    //   //       return null
+    //   //     }
+    //   //   }
+    //   // ]
+    // },
+    // assetsInlineLimit: 0
+  },
+  worker: {
+    format: 'es'
+  },
+  esbuild: {
+    minifySyntax: false
   },
   optimizeDeps: {
     include: [
@@ -35,7 +65,8 @@ export default defineConfig({
       'marked'
     ],
     esbuildOptions: {
-      tsconfig: './tsconfig.json'
+      tsconfig: './tsconfig.json',
+      // plugins: [importMetaUrlPlugin]
     }
   },
   resolve: {

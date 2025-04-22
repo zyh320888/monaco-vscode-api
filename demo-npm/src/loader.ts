@@ -55,14 +55,16 @@ if (locale != null) {
   }
 }
 
-const mode = searchParams.get('mode')
+// const mode = searchParams.get('mode')
 
-if (mode === 'full-workbench') {
-  void import('./main.workbench')
-} else if (mode === 'views') {
-  void import('./main.views')
-} else {
-  void import('./main.minimal')
-}
+// if (mode === 'full-workbench') {
+//   void import('./main.workbench')
+// } else if (mode === 'views') {
+//   void import('./main.views')
+// } else {
+//   void import('./main.minimal')
+// }
+
+void import('./main.views')
 
 export {}

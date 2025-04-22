@@ -12,11 +12,13 @@
 }
 
 body {
-  background-color: var(--vscode-editorWidget-background);
-  color: var(--vscode-editorWidget-foreground);
   margin: 0;
 }
 
+#d8d-ai-editor {
+  background-color: var(--vscode-editorWidget-background);
+  color: var(--vscode-editorWidget-foreground);
+}
 #editors {
   position: relative;
   min-width: 0;
@@ -47,7 +49,8 @@ body {
 }
 
 #workbench-container {
-  height: 100vh;
+  /* height: 100vh; */
+  height: 100%;
   display: flex;
   flex-direction: column
 }

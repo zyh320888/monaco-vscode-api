@@ -8,8 +8,8 @@
  */
 import {
   // IStorageService,
-  // IWorkbenchLayoutService,
-  // getService,
+  IWorkbenchLayoutService,
+  getService,
   initialize as initializeMonacoService
 } from '@codingame/monaco-vscode-api'
 import getQuickAccessServiceOverride from '@codingame/monaco-vscode-quickaccess-service-override'
@@ -38,8 +38,8 @@ import {
 } from './setup.common'
 
 // 创建主容器元素并设置工作区HTML结构
-const container = document.createElement('div')
-container.id = 'app'
+// const container = document.createElement('div')
+// container.id = 'app'
 // container.innerHTML = `
 // <div id="workbench-container">
 // <div id="titleBar"></div>
@@ -84,195 +84,219 @@ container.id = 'app'
 // <button id="resetkeybindings">Reset keybindings</button>
 // <div id="keybindings-editor" class="standalone-editor"></div>`
 
-container.innerHTML = `
-<div id="workbench-container">
-  <div id="workbench-top">
-    <!-- 左侧整体区域 -->
-    <div style="display: flex; flex: 1; min-width: 0; border: 1px solid var(--vscode-editorWidget-border)">
-      <!-- 代码模式整体区域（导航+编辑器） -->
-      <div id="code-container" style="display: flex; flex: 1; min-width: 0;">
-        <!-- 左侧导航和文件树 -->
-        <div style="display: flex; flex: none;">
-          <div id="activityBar"></div>
-          <div id="sidebar" style="width: 300px"></div>
-        </div>
-        
-        <!-- 代码编辑器区域 -->
-        <div id="editors" style="flex: 1; min-width: 0;"></div>
-      </div>
-      
-      <!-- 预览区域 -->
-      <div id="preview" style="flex: 1; min-width: 0;"></div>
-    </div>
 
-    <!-- 右侧辅助栏 -->
-    <div style="display: flex; flex: none; border: 1px solid var(--vscode-editorWidget-border);">
-      <div id="auxiliaryBar" style="max-width: 300px"></div>
-    </div>
-  </div>
-</div>
-
-<style>
-  /* 模式控制 */
-  .preview-mode #code-container { display: none !important; }
-  .preview-mode #preview { display: block !important; }
-  
-  .code-mode #code-container { display: flex !important; }
-  .code-mode #preview { display: none !important; }
-  
-  .split-mode #code-container {
-    display: flex !important;
-    flex: 0.5 !important;
+declare global {
+  interface Window {
+    d8dAiEditor: {
+      /**
+       * 初始化
+       */
+      init: (obj: EditorMode) => void
+    }
   }
-  .split-mode #preview {
-    display: block !important;
-    flex: 0.5 !important;
-  }
-</style>
-`
-
-document.body.append(container)
-
-// 初始化Monaco服务并覆盖默认服务
-await initializeMonacoService(
-  {
-    ...commonServices,
-    // ...getViewsServiceOverride(openNewCodeEditor, undefined),
-    ...getViewsServiceOverride(),
-    ...getQuickAccessServiceOverride({
-      isKeybindingConfigurationVisible: isEditorPartVisible,
-      shouldUseGlobalPicker: (_editor, isStandalone) => !isStandalone && isEditorPartVisible()
-    })
-  },
-  document.body,
-  constructOptions,
-  envOptions
-)
-
-// 设置默认预览模式
-document.getElementById('workbench-container')?.classList.add('preview-mode')
-
-// 添加模式切换按钮
-const modeControls = document.createElement('div')
-modeControls.style.position = 'absolute'
-modeControls.style.top = '10px'
-modeControls.style.right = '320px'
-modeControls.style.zIndex = '1000'
-modeControls.innerHTML = `
-  <button id="previewModeBtn">预览</button>
-  <button id="codeModeBtn">代码</button>
-  <button id="splitModeBtn">并列</button>
-  <button id="toggleAuxiliary">切换辅助栏</button>
-`
-document.body.append(modeControls)
-
-// 模式切换事件监听
-document.getElementById('previewModeBtn')?.addEventListener('click', () => {
-  const container = document.getElementById('workbench-container')
-  container?.classList.remove('code-mode', 'split-mode')
-  container?.classList.add('preview-mode')
-})
-
-document.getElementById('codeModeBtn')?.addEventListener('click', () => {
-  const container = document.getElementById('workbench-container')
-  container?.classList.remove('preview-mode', 'split-mode')
-  container?.classList.add('code-mode')
-})
-
-document.getElementById('splitModeBtn')?.addEventListener('click', () => {
-  const container = document.getElementById('workbench-container')
-  container?.classList.remove('preview-mode', 'code-mode')
-  container?.classList.add('split-mode')
-})
-
-// 辅助栏切换事件监听
-document.getElementById('toggleAuxiliary')?.addEventListener('click', () => {
-  const auxiliaryBar = document.getElementById('auxiliaryBar')
-  if (auxiliaryBar) {
-    auxiliaryBar.style.display = auxiliaryBar.style.display === 'none' ? 'block' : 'none'
-  }
-})
-
-// 设置未捕获异常处理器
-setUnexpectedErrorHandler((e) => {
-  console.info('Unexpected error', e)
-})
-
-/**
- * 配置工作区各部分的显示和布局
- * 遍历所有工作区组件配置，进行以下操作：
- * 1. 将组件绑定到对应的DOM元素
- * 2. 设置元素位置变化监听器
- * 3. 根据初始可见性设置显示/隐藏
- * 4. 设置可见性变化监听器
- */
-for (const config of [
-  // 标题栏配置 - 固定位置
-  // { part: Parts.TITLEBAR_PART, element: '#titleBar' },
-  // 横幅区域配置 - 固定位置
-  // { part: Parts.BANNER_PART, element: '#banner' },
-  {
-    // 侧边栏配置 - 动态位置(左/右)
-    part: Parts.SIDEBAR_PART,
-    get element() {
-      // 根据侧边栏位置动态返回对应的DOM元素选择器
-      return getSideBarPosition() === Position.LEFT ? '#sidebar' : '#sidebar-right'
-    },
-    // 当侧边栏位置变化时重新绑定
-    onDidElementChange: onDidChangeSideBarPosition
-  },
-  {
-    // 活动栏配置 - 动态位置(跟随侧边栏)
-    part: Parts.ACTIVITYBAR_PART,
-    get element() {
-      return getSideBarPosition() === Position.LEFT ? '#activityBar' : '#activityBar-right'
-    },
-    onDidElementChange: onDidChangeSideBarPosition
-  },
-  // 面板区域配置 - 固定位置
-  // { part: Parts.PANEL_PART, element: '#panel' },
-  // 编辑器区域配置 - 固定位置
-  { part: Parts.EDITOR_PART, element: '#editors' },
-  // 状态栏配置 - 固定位置
-  // { part: Parts.STATUSBAR_PART, element: '#statusBar' },
-  {
-    // 辅助栏配置 - 动态位置(与侧边栏相反)
-    part: Parts.AUXILIARYBAR_PART,
-    get element() {
-      return getSideBarPosition() === Position.LEFT ? '#auxiliaryBar' : '#auxiliaryBar-left'
-    },
-    onDidElementChange: onDidChangeSideBarPosition
-  }
-]) {
-  // 初始绑定组件到DOM元素
-  attachPart(config.part, document.querySelector<HTMLDivElement>(config.element)!)
-
-  // 如果配置了元素变化监听器，设置回调
-  config.onDidElementChange?.(() => {
-    // 当元素位置变化时重新绑定
-    attachPart(config.part, document.querySelector<HTMLDivElement>(config.element)!)
-  })
-
-  // 初始可见性检查
-  if (!isPartVisibile(config.part)) {
-    // 如果组件不可见，隐藏对应DOM元素
-    document.querySelector<HTMLDivElement>(config.element)!.style.display = 'none'
-  }
-
-  // 设置组件可见性变化监听器
-  onPartVisibilityChange(config.part, (visible) => {
-    // 根据可见性参数显示/隐藏DOM元素
-    document.querySelector<HTMLDivElement>(config.element)!.style.display = visible
-      ? 'block'
-      : 'none'
-  })
 }
 
-// 获取布局服务并设置面板切换事件
-// const layoutService = await getService(IWorkbenchLayoutService)
-// document.querySelector('#togglePanel')!.addEventListener('click', async () => {
-//   layoutService.setPartHidden(layoutService.isVisible(Parts.PANEL_PART, window), Parts.PANEL_PART)
+const init = async () => {
+
+  const container = document.getElementById('d8d-ai-editor')
+
+  const containerHtml = `
+  <div id="workbench-container">
+    <div id="workbench-top">
+      <!-- 左侧整体区域 -->
+      <div style="display: flex; flex: 1; min-width: 0; border: 1px solid var(--vscode-editorWidget-border)">
+        <!-- 代码模式整体区域（导航+编辑器） -->
+        <div id="code-container" style="display: flex; flex: 1; min-width: 0;">
+          <!-- 左侧导航和文件树 -->
+          <div style="display: flex; flex: none;">
+            <div id="activityBar"></div>
+            <div id="sidebar" style="width: 300px"></div>
+          </div>
+          
+          <!-- 代码编辑器区域 -->
+          <div id="editors" style="flex: 1; min-width: 0;"></div>
+        </div>
+        
+        <!-- 预览区域 -->
+        <div id="preview" style="flex: 1; min-width: 0;"></div>
+      </div>
+
+      <!-- 右侧辅助栏 -->
+      <div style="display: flex; flex: none; border: 1px solid var(--vscode-editorWidget-border);">
+        <div id="auxiliaryBar" style="max-width: 300px"></div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    /* 模式控制 */
+    .preview-mode #code-container { display: none !important; }
+    .preview-mode #preview { display: block !important; }
+    
+    .code-mode #code-container { display: flex !important; }
+    .code-mode #preview { display: none !important; }
+    
+    .split-mode #code-container {
+      display: flex !important;
+      flex: 0.5 !important;
+    }
+    .split-mode #preview {
+      display: block !important;
+      flex: 0.5 !important;
+    }
+  </style>
+  `
+
+  // document.body.append(container)
+  if (container) {
+    container.style.position = 'relative'
+    container.innerHTML = containerHtml
+
+    // 初始化Monaco服务并覆盖默认服务
+    await initializeMonacoService(
+      {
+        ...commonServices,
+        // ...getViewsServiceOverride(openNewCodeEditor, undefined),
+        ...getViewsServiceOverride(),
+        ...getQuickAccessServiceOverride({
+          isKeybindingConfigurationVisible: isEditorPartVisible,
+          shouldUseGlobalPicker: (_editor, isStandalone) => !isStandalone && isEditorPartVisible()
+        })
+      },
+      container,
+      constructOptions,
+      envOptions
+    )
+
+    
+  /**
+   * 配置工作区各部分的显示和布局
+   * 遍历所有工作区组件配置，进行以下操作：
+   * 1. 将组件绑定到对应的DOM元素
+   * 2. 设置元素位置变化监听器
+   * 3. 根据初始可见性设置显示/隐藏
+   * 4. 设置可见性变化监听器
+   */
+  for (const config of [
+    // 标题栏配置 - 固定位置
+    // { part: Parts.TITLEBAR_PART, element: '#titleBar' },
+    // 横幅区域配置 - 固定位置
+    // { part: Parts.BANNER_PART, element: '#banner' },
+    {
+      // 侧边栏配置 - 动态位置(左/右)
+      part: Parts.SIDEBAR_PART,
+      get element() {
+        // 根据侧边栏位置动态返回对应的DOM元素选择器
+        return getSideBarPosition() === Position.LEFT ? '#sidebar' : '#sidebar-right'
+      },
+      // 当侧边栏位置变化时重新绑定
+      onDidElementChange: onDidChangeSideBarPosition
+    },
+    {
+      // 活动栏配置 - 动态位置(跟随侧边栏)
+      part: Parts.ACTIVITYBAR_PART,
+      get element() {
+        return getSideBarPosition() === Position.LEFT ? '#activityBar' : '#activityBar-right'
+      },
+      onDidElementChange: onDidChangeSideBarPosition
+    },
+    // 面板区域配置 - 固定位置
+    // { part: Parts.PANEL_PART, element: '#panel' },
+    // 编辑器区域配置 - 固定位置
+    { part: Parts.EDITOR_PART, element: '#editors' },
+    // 状态栏配置 - 固定位置
+    // { part: Parts.STATUSBAR_PART, element: '#statusBar' },
+    {
+      // 辅助栏配置 - 动态位置(与侧边栏相反)
+      part: Parts.AUXILIARYBAR_PART,
+      get element() {
+        return getSideBarPosition() === Position.LEFT ? '#auxiliaryBar' : '#auxiliaryBar-left'
+      },
+      onDidElementChange: onDidChangeSideBarPosition
+    }
+  ]) {
+    // 初始绑定组件到DOM元素
+    attachPart(config.part, document.querySelector<HTMLDivElement>(config.element)!)
+
+    // 如果配置了元素变化监听器，设置回调
+    config.onDidElementChange?.(() => {
+      // 当元素位置变化时重新绑定
+      attachPart(config.part, document.querySelector<HTMLDivElement>(config.element)!)
+    })
+
+    // 初始可见性检查
+    if (!isPartVisibile(config.part)) {
+      // 如果组件不可见，隐藏对应DOM元素
+      document.querySelector<HTMLDivElement>(config.element)!.style.display = 'none'
+    }
+
+    // 设置组件可见性变化监听器
+    onPartVisibilityChange(config.part, (visible) => {
+      // 根据可见性参数显示/隐藏DOM元素
+      document.querySelector<HTMLDivElement>(config.element)!.style.display = visible
+        ? 'block'
+        : 'none'
+    })
+  }
+
+    document.getElementById('workbench-container')?.classList.add('preview-mode')
+  }
+
+  // 设置默认预览模式
+
+}
+
+const appendTestModeControls = () => {
+  // 添加模式切换按钮
+  const modeControls = document.createElement('div')
+  modeControls.style.position = 'absolute'
+  modeControls.style.top = '10px'
+  modeControls.style.right = '320px'
+  modeControls.style.zIndex = '1000'
+  modeControls.innerHTML = `
+    <button id="previewModeBtn">预览</button>
+    <button id="codeModeBtn">代码</button>
+    <button id="splitModeBtn">并列</button>
+    <button id="toggleAuxiliary">切换辅助栏</button>
+  `
+  // document.body.append(modeControls)
+  document.getElementById('workbench-container')?.append(modeControls)
+}
+// // 模式切换事件监听
+// document.getElementById('previewModeBtn')?.addEventListener('click', () => {
+//   const container = document.getElementById('workbench-container')
+//   container?.classList.remove('code-mode', 'split-mode')
+//   container?.classList.add('preview-mode')
 // })
+
+// document.getElementById('codeModeBtn')?.addEventListener('click', () => {
+//   const container = document.getElementById('workbench-container')
+//   container?.classList.remove('preview-mode', 'split-mode')
+//   container?.classList.add('code-mode')
+// })
+
+// document.getElementById('splitModeBtn')?.addEventListener('click', () => {
+//   const container = document.getElementById('workbench-container')
+//   container?.classList.remove('preview-mode', 'code-mode')
+//   container?.classList.add('split-mode')
+// })
+
+// // 辅助栏切换事件监听
+// document.getElementById('toggleAuxiliary')?.addEventListener('click', () => {
+//   const auxiliaryBar = document.getElementById('auxiliaryBar')
+//   if (auxiliaryBar) {
+//     auxiliaryBar.style.display = auxiliaryBar.style.display === 'none' ? 'block' : 'none'
+//   }
+// })
+
+
+
+
+// // 获取布局服务并设置面板切换事件
+// const layoutService = await getService(IWorkbenchLayoutService)
+// // document.querySelector('#togglePanel')!.addEventListener('click', async () => {
+// //   layoutService.setPartHidden(layoutService.isVisible(Parts.PANEL_PART, window), Parts.PANEL_PART)
+// // })
 
 // document.querySelector('#toggleAuxiliary')!.addEventListener('click', async () => {
 //   layoutService.setPartHidden(
@@ -280,6 +304,46 @@ for (const config of [
 //     Parts.AUXILIARYBAR_PART
 //   )
 // })
+
+const editorMode: EditorMode = {
+  init: () => {
+    console.log('init')
+    init()
+  },
+  toggleAuxiliary: async () => {
+    console.log('toggleAuxiliary')
+    // 获取布局服务并设置面板切换事件
+    const layoutService = await getService(IWorkbenchLayoutService)
+    layoutService.setPartHidden(
+      layoutService.isVisible(Parts.AUXILIARYBAR_PART, window),
+      Parts.AUXILIARYBAR_PART
+    )
+  },
+  togglePreviewMode: () => {
+    console.log('togglePreviewMode')
+    const container = document.getElementById('workbench-container')
+    container?.classList.remove('code-mode', 'split-mode')
+    container?.classList.add('preview-mode')
+  },
+  toggleCodeMode: () => {
+    console.log('toggleCodeMode')
+    const container = document.getElementById('workbench-container')
+    container?.classList.remove('preview-mode', 'split-mode')
+    container?.classList.add('code-mode')
+  },
+  toggleSplitMode: () => {
+    console.log('toggleSplitMode')
+    const container = document.getElementById('workbench-container')
+    container?.classList.remove('preview-mode', 'code-mode')
+    container?.classList.add('split-mode')
+  },
+  appendTestModeControls: () => {
+    console.log('appendTestModeControls')
+    appendTestModeControls()
+  }, 
+}
+
+window.d8dAiEditor.init(editorMode)
 
 /**
  * 清除存储数据
@@ -303,5 +367,9 @@ export async function clearStorage(): Promise<void> {
 //   ExtensionHostKind.LocalProcess
 // ).setAsDefaultApi()
 
+// 设置未捕获异常处理器
+setUnexpectedErrorHandler((e) => {
+  console.info('Unexpected error', e)
+})
 
 export { remoteAuthority }
