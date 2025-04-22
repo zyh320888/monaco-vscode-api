@@ -87,21 +87,48 @@ container.id = 'app'
 container.innerHTML = `
 <div id="workbench-container">
   <div id="workbench-top">
-    <div style="display: flex; flex: none; border: 1px solid var(--vscode-editorWidget-border)">
-      <div id="activityBar"></div>
-      <div id="sidebar" style="width: 300px"></div>
-      <div id="auxiliaryBar-left" style="max-width: 300px"></div>
+    <!-- 左侧整体区域 -->
+    <div style="display: flex; flex: 1; min-width: 0; border: 1px solid var(--vscode-editorWidget-border)">
+      <!-- 代码模式整体区域（导航+编辑器） -->
+      <div id="code-container" style="display: flex; flex: 1; min-width: 0;">
+        <!-- 左侧导航和文件树 -->
+        <div style="display: flex; flex: none;">
+          <div id="activityBar"></div>
+          <div id="sidebar" style="width: 300px"></div>
+        </div>
+        
+        <!-- 代码编辑器区域 -->
+        <div id="editors" style="flex: 1; min-width: 0;"></div>
+      </div>
+      
+      <!-- 预览区域 -->
+      <div id="preview" style="flex: 1; min-width: 0;"></div>
     </div>
-    <div style="flex: 1; min-width: 0">
-      <div id="editors"></div>
-    </div>
+
+    <!-- 右侧辅助栏 -->
     <div style="display: flex; flex: none; border: 1px solid var(--vscode-editorWidget-border);">
-      <div id="sidebar-right" style="max-width: 500px"></div>
-      <div id="activityBar-right"></div>
       <div id="auxiliaryBar" style="max-width: 300px"></div>
     </div>
   </div>
 </div>
+
+<style>
+  /* 模式控制 */
+  .preview-mode #code-container { display: none !important; }
+  .preview-mode #preview { display: block !important; }
+  
+  .code-mode #code-container { display: flex !important; }
+  .code-mode #preview { display: none !important; }
+  
+  .split-mode #code-container {
+    display: flex !important;
+    flex: 0.5 !important;
+  }
+  .split-mode #preview {
+    display: block !important;
+    flex: 0.5 !important;
+  }
+</style>
 `
 
 document.body.append(container)
@@ -121,6 +148,50 @@ await initializeMonacoService(
   constructOptions,
   envOptions
 )
+
+// 设置默认预览模式
+document.getElementById('workbench-container')?.classList.add('preview-mode')
+
+// 添加模式切换按钮
+const modeControls = document.createElement('div')
+modeControls.style.position = 'absolute'
+modeControls.style.top = '10px'
+modeControls.style.right = '320px'
+modeControls.style.zIndex = '1000'
+modeControls.innerHTML = `
+  <button id="previewModeBtn">预览</button>
+  <button id="codeModeBtn">代码</button>
+  <button id="splitModeBtn">并列</button>
+  <button id="toggleAuxiliary">切换辅助栏</button>
+`
+document.body.append(modeControls)
+
+// 模式切换事件监听
+document.getElementById('previewModeBtn')?.addEventListener('click', () => {
+  const container = document.getElementById('workbench-container')
+  container?.classList.remove('code-mode', 'split-mode')
+  container?.classList.add('preview-mode')
+})
+
+document.getElementById('codeModeBtn')?.addEventListener('click', () => {
+  const container = document.getElementById('workbench-container')
+  container?.classList.remove('preview-mode', 'split-mode')
+  container?.classList.add('code-mode')
+})
+
+document.getElementById('splitModeBtn')?.addEventListener('click', () => {
+  const container = document.getElementById('workbench-container')
+  container?.classList.remove('preview-mode', 'code-mode')
+  container?.classList.add('split-mode')
+})
+
+// 辅助栏切换事件监听
+document.getElementById('toggleAuxiliary')?.addEventListener('click', () => {
+  const auxiliaryBar = document.getElementById('auxiliaryBar')
+  if (auxiliaryBar) {
+    auxiliaryBar.style.display = auxiliaryBar.style.display === 'none' ? 'block' : 'none'
+  }
+})
 
 // 设置未捕获异常处理器
 setUnexpectedErrorHandler((e) => {
