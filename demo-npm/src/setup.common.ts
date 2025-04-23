@@ -391,10 +391,10 @@ export const constructOptions: IWorkbenchConstructionOptions = {
     logLevel: LogLevel.Info // 日志级别 (默认Info级别)
   },
   // 默认配置项
-  configurationDefaults: {
-    // 窗口标题格式 (支持变量: ${separator}=分隔符, ${dirty}=修改标记, ${activeEditorShort}=当前编辑器名称)
-    'window.title': 'Monaco-Vscode-Api34535${separator}${dirty}${activeEditorShort}'
-  },
+  // configurationDefaults: {
+  //   // 窗口标题格式 (支持变量: ${separator}=分隔符, ${dirty}=修改标记, ${activeEditorShort}=当前编辑器名称)
+  //   'window.title': 'Monaco-Vscode-Api34535${separator}${dirty}${activeEditorShort}'
+  // },
   // 默认布局配置
   defaultLayout: {
     // 默认打开的编辑器配置
@@ -433,8 +433,8 @@ export const constructOptions: IWorkbenchConstructionOptions = {
   // },
   // 产品配置信息
   productConfiguration: {
-    nameShort: 'monaco-vscode-api223', // 产品简称
-    nameLong: 'monaco-vscode-api433445353',  // 产品全称
+    // nameShort: 'monaco-vscode-api223', // 产品简称
+    // nameLong: 'monaco-vscode-api433445353',  // 产品全称
     // 扩展市场配置
     extensionsGallery: {
       serviceUrl: 'https://open-vsx.org/vscode/gallery', // 扩展市场服务URL

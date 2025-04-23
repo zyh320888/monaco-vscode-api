@@ -1,5 +1,5 @@
 {
-    "workbench.colorTheme": "Default Dark+",
+    "workbench.colorTheme": "Default Light+",
     "workbench.iconTheme": "vs-seti",
     "editor.autoClosingBrackets": "languageDefined",
     "editor.autoClosingQuotes": "languageDefined",
@@ -17,7 +17,7 @@
     "accessibility.signals.onDebugBreak": {
         "sound": "on"
     },
-    "files.autoSave": "on",
+    "files.autoSave": "afterDelay",
     "debug.toolBarLocation": "docked",
     "editor.experimental.asyncTokenization": true,
     "terminal.integrated.tabs.title": "${sequence}",
