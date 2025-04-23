@@ -35,8 +35,9 @@ export interface D8dAiEditor {
     init: (obj: EditorMode) => void,
     secretStorageProvider: ISecretStorageProvider
 }
-  declare global {
-    interface Window {
-      d8dAiEditor: D8dAiEditor
-    }
+
+declare global {
+  interface Window {
+    d8dAiEditor: D8dAiEditor
   }
+}

@@ -456,7 +456,6 @@ export const constructOptions: IWorkbenchConstructionOptions = {
       "*"
     ]
   },
-  secretStorageProvider: window.d8dAiEditor.secretStorageProvider 
 }
 
 /**

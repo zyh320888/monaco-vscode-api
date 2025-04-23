@@ -138,7 +138,10 @@ const init = async () => {
         })
       },
       container,
-      constructOptions,
+      {
+        ...constructOptions,
+        secretStorageProvider: window.d8dAiEditor.secretStorageProvider 
+      },
       envOptions
     )
 
