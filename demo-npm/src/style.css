@@ -57,7 +57,35 @@ body {
 
 #workbench-top {
   display: flex;
-  gap: 20px;
+  /* gap: 20px; */
   flex: 2;
   min-height: 0
+}
+
+/* #code-container {
+  display: flex; flex: 1; min-width: 0;
+} */
+
+/* 模式控制 */
+.preview-mode #code-container { 
+  /* display: none !important;  */
+  /* display: flex !important; */
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0.1;
+}
+.preview-mode #preview { display: block !important; }
+
+/* .code-mode #code-container { display: flex !important; } */
+.code-mode #code-container { display: flex !important; flex: 1; min-width: 0; }
+.code-mode #preview { display: none !important; }
+
+.split-mode #code-container {
+  display: flex !important;
+  flex: 0.5 !important;
+}
+.split-mode #preview {
+  display: block !important;
+  flex: 0.5 !important;
 }
