@@ -6,7 +6,6 @@
     <title>monaco-vscode-api demo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
-    <script type="module" src="/src/loader.ts"></script>
   </head>
   <body>
     <div class="flex flex-col h-screen w-screen items-center justify-center">
@@ -44,9 +43,13 @@
             localStorage.removeItem(`secret_${key}`);
           },
           type: 'persisted'
-        }
+        },
+        remoteAuthority: '23964.dev.d8d.fun',
+        connectionToken: 'your-token',
+        remotePath: '/docker/codeserver/project/test/d8d-ai-blank-templates/admin-mobile-starter/'
 
       }
     </script> 
+    <script type="module" src="/src/loader.ts"></script>
   </body>
 </html>

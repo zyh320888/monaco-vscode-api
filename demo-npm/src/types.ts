@@ -34,6 +34,9 @@ export interface D8dAiEditor {
      */
     init: (obj: EditorMode) => void,
     secretStorageProvider: ISecretStorageProvider
+    remoteAuthority: string
+    connectionToken: string
+    remotePath: string
 }
 
 declare global {

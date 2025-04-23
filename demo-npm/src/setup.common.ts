@@ -26,7 +26,7 @@ import getKeybindingsServiceOverride, {
 //   initFile
 // } from '@codingame/monaco-vscode-files-service-override'
 // 导入monaco编辑器核心模块
-import * as monaco from 'monaco-editor'
+// import * as monaco from 'monaco-editor'
 import {
   IWorkbenchConstructionOptions,
   LogLevel,
@@ -106,10 +106,10 @@ console.log(vscode.version);
 // 解析当前页面URL参数
 const url = new URL(document.location.href)
 const params = url.searchParams
-export const remoteAuthority = params.get('remoteAuthority') ?? undefined
-export const connectionToken = params.get('connectionToken') ?? undefined
-export const remotePath =
-  remoteAuthority != null ? (params.get('remotePath') ?? undefined) : undefined
+// export const remoteAuthority = params.get('remoteAuthority') ?? undefined
+// export const connectionToken = params.get('connectionToken') ?? undefined
+// export const remotePath =
+//   remoteAuthority != null ? (params.get('remotePath') ?? undefined) : undefined
 export const resetLayout = params.has('resetLayout')
 export const useHtmlFileSystemProvider = params.has('htmlFileSystemProvider')
 params.delete('resetLayout')
@@ -351,42 +351,42 @@ await Promise.all([
  */
 export const constructOptions: IWorkbenchConstructionOptions = {
   // 远程授权信息，用于远程连接场景
-  remoteAuthority,
+  // remoteAuthority,
   // 启用工作区信任功能 (true=启用)
   // enableWorkspaceTrust: true,
   // 连接令牌，用于安全验证
-  connectionToken,
+  // connectionToken,
   // 窗口指示器配置 (显示在窗口标题栏)
   windowIndicator: {
     label: 'monaco-vscode-api2232323', // 显示标签文本
     tooltip: '',                // 悬停提示文本
     command: ''                 // 点击执行的命令
   },
-  // 工作区提供者配置
-  workspaceProvider: {
-    trusted: true, // 工作区是否被信任
-    // 打开工作区的方法
-    async open() {
-      window.open(window.location.href)
-      return true
-    },
-    // 工作区URI配置
-    workspace:
-      // remotePath == null
-      //   ? {
-      //       // 本地工作区URI配置
-      //       workspaceUri: workspaceFile
-      //     }
-      //   : 
-        {
-            // 远程工作区文件夹URI配置
-            folderUri: monaco.Uri.from({
-              scheme: 'vscode-remote', // 协议方案
-              path: remotePath,       // 远程路径
-              authority: remoteAuthority // 远程授权
-            })
-          }
-  },
+  // // 工作区提供者配置
+  // workspaceProvider: {
+  //   trusted: true, // 工作区是否被信任
+  //   // 打开工作区的方法
+  //   async open() {
+  //     window.open(window.location.href)
+  //     return true
+  //   },
+  //   // 工作区URI配置
+  //   workspace:
+  //     // remotePath == null
+  //     //   ? {
+  //     //       // 本地工作区URI配置
+  //     //       workspaceUri: workspaceFile
+  //     //     }
+  //     //   : 
+  //       {
+  //           // 远程工作区文件夹URI配置
+  //           folderUri: monaco.Uri.from({
+  //             scheme: 'vscode-remote', // 协议方案
+  //             path: remotePath,       // 远程路径
+  //             authority: remoteAuthority // 远程授权
+  //           })
+  //         }
+  // },
   // 开发选项配置
   developmentOptions: {
     logLevel: LogLevel.Info // 日志级别 (默认Info级别)

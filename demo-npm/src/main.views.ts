@@ -20,20 +20,23 @@
 // } from '@codingame/monaco-vscode-keybindings-service-override'
 
 // 导入本地工具和自定义组件
-import { remoteAuthority } from './setup.views'
+// import { remoteAuthority } from './setup.views'
 // import { CustomEditorInput } from './features/customView.views'
 
 // // 导入默认配置和快捷键
 // import defaultConfiguration from './user/configuration.json?raw'
 // import defaultKeybindings from './user/keybindings.json?raw'
 
+import './setup.views'
 // 导入公共主模块
 import './main.common'
 
-// 如果存在远程授权，则加载远程扩展功能
-if (remoteAuthority != null) {
-  void import('./features/remoteExtension')
-}
+// // 如果存在远程授权，则加载远程扩展功能
+// if (remoteAuthority != null) {
+//   void import('./features/remoteExtension')
+// }
+
+import './features/remoteExtension'
 
 // // 自定义编辑器面板点击事件
 // document.querySelector('#customEditorPanel')!.addEventListener('click', async () => {

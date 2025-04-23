@@ -27,64 +27,18 @@ import getViewsServiceOverride, {
   Position
 } from '@codingame/monaco-vscode-views-service-override'
 import { setUnexpectedErrorHandler } from '@codingame/monaco-vscode-api/monaco'
+import * as monaco from 'monaco-editor'
 // import { openNewCodeEditor } from './features/editor'
 // import './features/customView.views.auxiliary'
 import {
   commonServices,
   constructOptions,
   envOptions,
-  remoteAuthority,
+  // remoteAuthority,
   // userDataProvider
 } from './setup.common'
 // import { editor } from 'monaco-editor'
 import { EditorMode } from './types'
-
-// 创建主容器元素并设置工作区HTML结构
-// const container = document.createElement('div')
-// container.id = 'app'
-// container.innerHTML = `
-// <div id="workbench-container">
-// <div id="titleBar"></div>
-// <div id="banner"></div>
-// <div id="workbench-top">
-//   <div style="display: flex; flex: none; border: 1px solid var(--vscode-editorWidget-border)">
-//     <div id="activityBar"></div>
-//     <div id="sidebar" style="width: 400px"></div>
-//     <div id="auxiliaryBar-left" style="max-width: 300px"></div>
-//   </div>
-//   <div style="flex: 1; min-width: 0">
-//     <h1>Editor</h1>
-//     <div id="editors"></div>
-
-//     <button id="toggleHTMLFileSystemProvider">Toggle HTML filesystem provider</button>
-//     <button id="customEditorPanel">Open custom editor panel</button>
-//     <button id="clearStorage">Clear user data</button>
-//     <button id="resetLayout">Reset layout</button>
-//     <button id="toggleFullWorkbench">Switch to full workbench mode</button>
-//     <br />
-//     <button id="togglePanel">Toggle Panel</button>
-//     <button id="toggleAuxiliary">Toggle Secondary Panel</button>
-//   </div>
-//   <div style="display: flex; flex: none; border: 1px solid var(--vscode-editorWidget-border);">
-//     <div id="sidebar-right" style="max-width: 500px"></div>
-//     <div id="activityBar-right"></div>
-//     <div id="auxiliaryBar" style="max-width: 300px"></div>
-//   </div>
-// </div>
-
-// <div id="panel"></div>
-
-// <div id="statusBar"></div>
-// </div>
-
-// <h1>Settings<span id="settings-dirty">●</span></h1>
-// <button id="settingsui">Open settings UI</button>
-// <button id="resetsettings">Reset settings</button>
-// <div id="settings-editor" class="standalone-editor"></div>
-// <h1>Keybindings<span id="keybindings-dirty">●</span></h1>
-// <button id="keybindingsui">Open keybindings UI</button>
-// <button id="resetkeybindings">Reset keybindings</button>
-// <div id="keybindings-editor" class="standalone-editor"></div>`
 
 
 
@@ -140,7 +94,36 @@ const init = async () => {
       container,
       {
         ...constructOptions,
-        secretStorageProvider: window.d8dAiEditor.secretStorageProvider 
+        secretStorageProvider: window.d8dAiEditor.secretStorageProvider,
+        // 远程授权信息，用于远程连接场景
+        remoteAuthority: window.d8dAiEditor.remoteAuthority,
+        // 连接令牌，用于安全验证
+        connectionToken: window.d8dAiEditor.connectionToken,
+        // 工作区提供者配置
+        workspaceProvider: {
+          trusted: true, // 工作区是否被信任
+          // 打开工作区的方法
+          async open() {
+            window.open(window.location.href)
+            return true
+          },
+          // 工作区URI配置
+          workspace:
+            // remotePath == null
+            //   ? {
+            //       // 本地工作区URI配置
+            //       workspaceUri: workspaceFile
+            //     }
+            //   : 
+              {
+                  // 远程工作区文件夹URI配置
+                  folderUri: monaco.Uri.from({
+                    scheme: 'vscode-remote', // 协议方案
+                    path: window.d8dAiEditor.remotePath,       // 远程路径
+                    authority: window.d8dAiEditor.remoteAuthority // 远程授权
+                  })
+                }
+        },
       },
       envOptions
     )
@@ -280,49 +263,6 @@ const hideActivityBarButtons = () => {
   }
 }
 
-// // 模式切换事件监听
-// document.getElementById('previewModeBtn')?.addEventListener('click', () => {
-//   const container = document.getElementById('workbench-container')
-//   container?.classList.remove('code-mode', 'split-mode')
-//   container?.classList.add('preview-mode')
-// })
-
-// document.getElementById('codeModeBtn')?.addEventListener('click', () => {
-//   const container = document.getElementById('workbench-container')
-//   container?.classList.remove('preview-mode', 'split-mode')
-//   container?.classList.add('code-mode')
-// })
-
-// document.getElementById('splitModeBtn')?.addEventListener('click', () => {
-//   const container = document.getElementById('workbench-container')
-//   container?.classList.remove('preview-mode', 'code-mode')
-//   container?.classList.add('split-mode')
-// })
-
-// // 辅助栏切换事件监听
-// document.getElementById('toggleAuxiliary')?.addEventListener('click', () => {
-//   const auxiliaryBar = document.getElementById('auxiliaryBar')
-//   if (auxiliaryBar) {
-//     auxiliaryBar.style.display = auxiliaryBar.style.display === 'none' ? 'block' : 'none'
-//   }
-// })
-
-
-
-
-// // 获取布局服务并设置面板切换事件
-// const layoutService = await getService(IWorkbenchLayoutService)
-// // document.querySelector('#togglePanel')!.addEventListener('click', async () => {
-// //   layoutService.setPartHidden(layoutService.isVisible(Parts.PANEL_PART, window), Parts.PANEL_PART)
-// // })
-
-// document.querySelector('#toggleAuxiliary')!.addEventListener('click', async () => {
-//   layoutService.setPartHidden(
-//     layoutService.isVisible(Parts.AUXILIARYBAR_PART, window),
-//     Parts.AUXILIARYBAR_PART
-//   )
-// })
-
 const editorMode: EditorMode = {
   init: () => {
     init()
@@ -391,22 +331,8 @@ export async function clearStorage(): Promise<void> {
   // await ((await getService(IStorageService)) as BrowserStorageService).clear()
 }
 
-// // 注册演示扩展并设置为默认API
-// await registerExtension(
-//   {
-//     name: 'demo',
-//     publisher: 'codingame',
-//     version: '1.0.0',
-//     engines: {
-//       vscode: '*'
-//     }
-//   },
-//   ExtensionHostKind.LocalProcess
-// ).setAsDefaultApi()
-
-// 设置未捕获异常处理器
 setUnexpectedErrorHandler((e) => {
   console.info('Unexpected error', e)
 })
 
-export { remoteAuthority }
+// export { remoteAuthority }

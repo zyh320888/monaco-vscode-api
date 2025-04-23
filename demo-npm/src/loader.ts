@@ -1,5 +1,5 @@
 const searchParams = new URLSearchParams(window.location.search)
-const locale = searchParams.get('locale')
+const locale = searchParams.get('locale') || 'zh-hans'
 
 const localeLoader: Partial<Record<string, () => Promise<void>>> = {
   cs: async () => {
