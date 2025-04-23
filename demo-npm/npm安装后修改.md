@@ -94,4 +94,14 @@ export function resolveAmdNodeModulePath(nodeModuleName, pathInsideNodeModule) {
 }
 ```
 
+修改
+demo-npm/node_modules/@codingame/monaco-vscode-api/missing-services.js
 
+将SignService 类改成引入
+
+```js
+import { SignService } from './vscode/src/vs/platform/sign/browser/signService';
+registerSingleton(ISignService, SignService, InstantiationType.Delayed);
+```
+从 vscode复制过来
+demo-npm/node_modules/@codingame/monaco-vscode-api/vscode/src/vs/platform/sign/browser 
