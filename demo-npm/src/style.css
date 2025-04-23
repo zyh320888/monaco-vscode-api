@@ -84,6 +84,7 @@ body {
 .split-mode #code-container {
   display: flex !important;
   flex: 0.5 !important;
+  min-width: 0;
 }
 .split-mode #preview {
   display: block !important;
