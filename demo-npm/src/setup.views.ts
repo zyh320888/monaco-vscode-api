@@ -285,7 +285,7 @@ const hideActivityBarButtons = () => {
   if (monacoActionTabListBar) {
     // 找到 ul 的 role=tablist 的元素
     const tablist = monacoActionTabListBar.querySelector('ul[role="tablist"]')
-    console.log('tablist', tablist)
+
     // 隐藏 tablist 的 子元素 li, 第4，5个
     tablist?.querySelectorAll('li').forEach((li, index) => {
       if (index === 3 || index === 4) {
@@ -379,7 +379,7 @@ const editorMode: EditorMode = {
     const container = document.getElementById('workbench-container')
     container?.classList.remove('preview-mode', 'code-mode')
     container?.classList.add('split-mode')
-    
+
     hideActivityBarButtons()
   },
   appendTestModeControls: () => {
