@@ -37,6 +37,7 @@ import {
   // userDataProvider
 } from './setup.common'
 // import { editor } from 'monaco-editor'
+import { EditorMode } from './types'
 
 // 创建主容器元素并设置工作区HTML结构
 // const container = document.createElement('div')
@@ -86,16 +87,6 @@ import {
 // <div id="keybindings-editor" class="standalone-editor"></div>`
 
 
-declare global {
-  interface Window {
-    d8dAiEditor: {
-      /**
-       * 初始化
-       */
-      init: (obj: EditorMode) => void
-    }
-  }
-}
 
 const init = async () => {
 
@@ -401,7 +392,7 @@ const editorMode: EditorMode = {
     document.querySelector('#toggleAuxiliary')!.addEventListener('click', async () => {
       editorMode.toggleAuxiliary()
     })
-  }, 
+  },
 }
 
 window.d8dAiEditor.init(editorMode)

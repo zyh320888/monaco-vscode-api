@@ -17,7 +17,35 @@
         init: (editorMode) => {
           editorMode.init()
           editorMode.appendTestModeControls()
+        },
+        secretStorageProvider:{
+          get: async (key) => {
+            try {
+              const encrypted = localStorage.getItem(`secret_${key}`);
+              if (!encrypted) return undefined;
+              // 这里应该使用实际的解密逻辑
+              return encrypted; 
+            } catch (error) {
+              console.error('Failed to get secret:', error);
+              throw error;
+            }
+          },
+          set: async (key, value) => {
+            try {
+              // 这里应该使用实际的加密逻辑
+              const encrypted = value;
+              localStorage.setItem(`secret_${key}`, encrypted);
+            } catch (error) {
+              console.error('Failed to set secret:', error);
+              throw error;
+            }
+          },
+          delete: async (key) => {
+            localStorage.removeItem(`secret_${key}`);
+          },
+          type: 'persisted'
         }
+
       }
     </script> 
   </body>

@@ -339,6 +339,7 @@ await Promise.all([
   initUserKeybindings(defaultKeybindings)
 ])
 
+
 /**
  * 工作台构造选项
  * 配置VSCode工作台的核心参数
@@ -455,6 +456,7 @@ export const constructOptions: IWorkbenchConstructionOptions = {
       "*"
     ]
   },
+  secretStorageProvider: window.d8dAiEditor.secretStorageProvider 
 }
 
 /**
