@@ -37,6 +37,7 @@ export interface D8dAiEditor {
     remoteAuthority: string
     connectionToken: string
     remotePath: string
+    containerHtml: string
 }
 
 declare global {

@@ -12,6 +12,35 @@
       <div id="d8d-ai-editor" style="width: 90vw; height: 80vh;"  ></div>
     </div>
     <script>
+      const containerHtml = `
+      <div id="workbench-container">
+        <div id="workbench-top">
+          <!-- 左侧整体区域 -->
+          <div style="display: flex; flex: 1; min-width: 0; border: 1px solid var(--vscode-editorWidget-border)">
+            <!-- 代码模式整体区域（导航+编辑器） -->
+            <div id="code-container">
+              <!-- 左侧导航和文件树 -->
+              <div style="display: flex; flex: none;">
+                <div id="activityBar"></div>
+                <div id="sidebar" style="width: 200px"></div>
+              </div>
+            
+              <!-- 代码编辑器区域 -->
+              <div id="editors" style="flex: 1; min-width: 0;"></div>
+            </div>
+          
+            <!-- 预览区域 -->
+            <div id="preview" style="flex: 1; min-width: 0;"></div>
+          </div>
+
+          <!-- 右侧辅助栏 -->
+          <div style="display: flex; flex: none; border: 1px solid var(--vscode-editorWidget-border);">
+            <div id="auxiliaryBar" style="max-width: 300px"></div>
+          </div>
+        </div>
+      </div>
+      `
+
       window.d8dAiEditor = {
         init: (editorMode) => {
           editorMode.init()
@@ -46,7 +75,8 @@
         },
         remoteAuthority: '23964.dev.d8d.fun',
         connectionToken: 'your-token',
-        remotePath: '/docker/codeserver/project/test/d8d-ai-blank-templates/admin-mobile-starter/'
+        remotePath: '/docker/codeserver/project/test/d8d-ai-blank-templates/admin-mobile-starter/',
+        containerHtml,
 
       }
     </script> 

@@ -46,39 +46,12 @@ const init = async () => {
 
   const container = document.getElementById('d8d-ai-editor')
 
-  const containerHtml = `
-  <div id="workbench-container">
-    <div id="workbench-top">
-      <!-- 左侧整体区域 -->
-      <div style="display: flex; flex: 1; min-width: 0; border: 1px solid var(--vscode-editorWidget-border)">
-        <!-- 代码模式整体区域（导航+编辑器） -->
-        <div id="code-container">
-          <!-- 左侧导航和文件树 -->
-          <div style="display: flex; flex: none;">
-            <div id="activityBar"></div>
-            <div id="sidebar" style="width: 200px"></div>
-          </div>
-          
-          <!-- 代码编辑器区域 -->
-          <div id="editors" style="flex: 1; min-width: 0;"></div>
-        </div>
-        
-        <!-- 预览区域 -->
-        <div id="preview" style="flex: 1; min-width: 0;"></div>
-      </div>
-
-      <!-- 右侧辅助栏 -->
-      <div style="display: flex; flex: none; border: 1px solid var(--vscode-editorWidget-border);">
-        <div id="auxiliaryBar" style="max-width: 300px"></div>
-      </div>
-    </div>
-  </div>
-  `
-
   // document.body.append(container)
   if (container) {
     container.style.position = 'relative'
-    container.innerHTML = containerHtml
+
+    if(window.d8dAiEditor.containerHtml)
+      container.innerHTML = window.d8dAiEditor.containerHtml
 
     // 初始化Monaco服务并覆盖默认服务
     await initializeMonacoService(
