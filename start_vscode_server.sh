@@ -6,8 +6,8 @@ set -e
 # 默认参数
 SERVER_DIR=${1:-"./vscode-server"}  # server安装目录
 PORT=${2:-23964}                     # 服务端口
-# HOST=${3:-"0.0.0.0"}                # 监听地址
-HOST=${3:-"localhost"}                # 监听地址
+HOST=${3:-"0.0.0.0"}                # 监听地址
+# HOST=${3:-"localhost"}                # 监听地址
 TOKEN=${4:-"your-token"}              # 连接令牌
 SERVER_DATA_DIR=${5:-"./vscode-server-data"}              # 服务器数据目录
 # 检查端口是否可用
