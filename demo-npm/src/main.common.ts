@@ -5,7 +5,7 @@
  * - 配置各种语言支持
  * - 提供UI交互功能
  */
-import './style.css'
+// import './style.css'
 // import * as monaco from 'monaco-editor'
 // import { ExtensionHostKind, registerExtension } from '@codingame/monaco-vscode-api/extensions'
 // import { useHtmlFileSystemProvider } from './setup.common'

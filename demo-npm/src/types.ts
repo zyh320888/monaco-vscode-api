@@ -14,6 +14,10 @@ export interface EditorMode {
      */
     toggleAuxiliary:  () => Promise<void>
     /**
+     * 切换面板
+     */
+    togglePanel:  () => Promise<void>
+    /**
      * 切换预览模式
      */
     togglePreviewMode: () => void

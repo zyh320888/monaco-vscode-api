@@ -6,6 +6,100 @@
     <title>monaco-vscode-api demo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <style>
+      :root {
+        font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+        font-size: 16px;
+        line-height: 24px;
+        font-weight: 400;
+
+        font-synthesis: none;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        -webkit-text-size-adjust: 100%;
+      }
+
+      body {
+        margin: 0;
+      }
+
+      #d8d-ai-editor {
+        background-color: var(--vscode-editorWidget-background);
+        color: var(--vscode-editorWidget-foreground);
+      }
+      #editors {
+        position: relative;
+        min-width: 0;
+        /* height: 45vh; */
+        height: 100%;
+        border: 1px solid var(--vscode-editorWidget-border);
+      }
+
+      #panel {
+        display: flex;
+        flex: 1;
+        border: 1px solid var(--vscode-editorWidget-border);
+        min-height: 0;
+      }
+
+      .standalone-editor {
+        width: 100%;
+        height: 55vh;
+      }
+
+      #titleBar {
+        position: relative;
+        flex: none;
+      }
+
+      #banner {
+        flex: none;
+      }
+
+      #workbench-container {
+        /* height: 100vh; */
+        height: 100%;
+        display: flex;
+        flex-direction: column
+      }
+
+      #workbench-top {
+        display: flex;
+        /* gap: 20px; */
+        flex: 2;
+        min-height: 0
+      }
+
+      /* #code-container {
+        display: flex; flex: 1; min-width: 0;
+      } */
+
+      /* 模式控制 */
+      .preview-mode #code-container { 
+        /* display: none !important;  */
+        /* display: flex !important; */
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        opacity: 0.1;
+      }
+      .preview-mode #preview { display: block !important; }
+
+      /* .code-mode #code-container { display: flex !important; } */
+      .code-mode #code-container { display: flex !important; flex: 1; min-width: 0; }
+      .code-mode #preview { display: none !important; }
+
+      .split-mode #code-container {
+        display: flex !important;
+        flex: 0.5 !important;
+        min-width: 0;
+      }
+      .split-mode #preview {
+        display: block !important;
+        flex: 0.5 !important;
+      }
+    </style>
   </head>
   <body>
     <div class="flex flex-col h-screen w-screen items-center justify-center">
@@ -18,15 +112,18 @@
           <!-- 左侧整体区域 -->
           <div style="display: flex; flex: 1; min-width: 0; border: 1px solid var(--vscode-editorWidget-border)">
             <!-- 代码模式整体区域（导航+编辑器） -->
-            <div id="code-container">
-              <!-- 左侧导航和文件树 -->
+            <div id="code-container" style="display: flex; flex: 1; min-width: 0;">
+              <!-- 水平导航区域 -->
               <div style="display: flex; flex: none;">
                 <div id="activityBar"></div>
                 <div id="sidebar" style="width: 200px"></div>
               </div>
-            
-              <!-- 代码编辑器区域 -->
-              <div id="editors" style="flex: 1; min-width: 0;"></div>
+              
+              <!-- 垂直编辑器+面板区域 -->
+              <div style="display: flex; flex-direction: column; flex: 1; min-width: 0;">
+                <div id="editors" style="flex: 1; min-width: 0;"></div>
+                <div id="panel" style="display: none; flex: 0 0 auto; min-width: 0; border: 1px solid var(--vscode-editorWidget-border)"></div>
+              </div>
             </div>
           
             <!-- 预览区域 -->
@@ -73,9 +170,9 @@
           },
           type: 'persisted'
         },
-        remoteAuthority: '23964.dev.d8d.fun',
+        remoteAuthority: '23965.d.d8d.fun',
         connectionToken: 'your-token',
-        remotePath: '/docker/codeserver/project/test/d8d-ai-blank-templates/admin-mobile-starter/',
+        remotePath: '/mnt/d8d-ai-design-workspaces/projects/133/templates/104_6/',
         containerHtml,
 
       }

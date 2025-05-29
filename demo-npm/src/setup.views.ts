@@ -134,7 +134,7 @@ const init = async () => {
         onDidElementChange: onDidChangeSideBarPosition
       },
       // 面板区域配置 - 固定位置
-      // { part: Parts.PANEL_PART, element: '#panel' },
+      { part: Parts.PANEL_PART, element: '#panel' },
       // 编辑器区域配置 - 固定位置
       { part: Parts.EDITOR_PART, element: '#editors' },
       // 状态栏配置 - 固定位置
@@ -191,6 +191,7 @@ const appendTestModeControls = () => {
     <button id="codeModeBtn">代码</button>
     <button id="splitModeBtn">并列</button>
     <button id="toggleAuxiliary">切换辅助栏</button>
+    <button id="togglePanel">切换面板</button>
   `
   // document.body.append(modeControls)
   document.getElementById('workbench-container')?.append(modeControls)
@@ -249,6 +250,15 @@ const editorMode: EditorMode = {
       Parts.AUXILIARYBAR_PART
     )
   },
+  togglePanel: async () => {
+    console.log('togglePanel')
+    // 获取布局服务并设置面板切换事件
+    const layoutService = await getService(IWorkbenchLayoutService)
+    layoutService.setPartHidden(
+      layoutService.isVisible(Parts.PANEL_PART, window),
+      Parts.PANEL_PART
+    )
+  },
   togglePreviewMode: () => {
     console.log('togglePreviewMode')
     const container = document.getElementById('workbench-container')
@@ -289,6 +299,9 @@ const editorMode: EditorMode = {
     })
     document.querySelector('#toggleAuxiliary')!.addEventListener('click', async () => {
       editorMode.toggleAuxiliary()
+    })
+    document.querySelector('#togglePanel')!.addEventListener('click', async () => {
+      editorMode.togglePanel()
     })
   },
 }
