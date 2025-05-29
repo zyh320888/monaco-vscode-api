@@ -41,6 +41,8 @@
         flex: 1;
         border: 1px solid var(--vscode-editorWidget-border);
         min-height: 0;
+        max-height: 30vh;
+        flex-shrink: 0;
       }
 
       .standalone-editor {
@@ -120,9 +122,9 @@
               </div>
               
               <!-- 垂直编辑器+面板区域 -->
-              <div style="display: flex; flex-direction: column; flex: 1; min-width: 0;">
-                <div id="editors" style="flex: 1; min-width: 0;"></div>
-                <div id="panel" style="display: none; flex: 0 0 auto; min-width: 0; border: 1px solid var(--vscode-editorWidget-border)"></div>
+              <div style="display: flex; flex-direction: column; flex: 1; min-width: 0; min-height: 0;">
+                <div id="editors" style="flex: 1; min-width: 0; min-height: 0;"></div>
+                <div id="panel" style="display: none; flex: 0 0 auto; min-width: 0; min-height: 0; border: 1px solid var(--vscode-editorWidget-border)"></div>
               </div>
             </div>
           
